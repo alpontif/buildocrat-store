@@ -17,11 +17,13 @@ Visitors' sent requests are kept on their device at `/requests/` so they can reo
 
 | Path | What it is |
 |---|---|
+| `site-config.json` | Google / Bing verification codes, GA4 and Cloudflare analytics IDs, IndexNow key. Blank = off. |
+| `WEEKLY_REFRESH.md` | How the weekly refresh runs, and the manual fallback. |
 | `store-config.json` | **Business settings**: margin, state uplifts, bundles, plans, Price Lock deposits and spreads, risk assumptions, contacts. |
 | `pipeline/build.py` | Builds everything in `docs/` from the Rate Book data and the config. |
 | `pipeline/rate-data.json` | Copy of the Rate Book's data used for the last build. |
-| `docs/assets/app.css`, `docs/assets/app.js` | Hand-written front end (never generated). |
-| `docs/` | The published site (GitHub Pages, custom domain `buildocrat.store`). |
+| `docs/assets/app.css`, `app.js`, `pwa.js` | Hand-written front end and install-as-app script (never generated). |
+| `docs/` | The published site (GitHub Pages, custom domain `www.buildocrat.store`). |
 | `.github/workflows/refresh.yml` | Mondays 16:37 Nigeria time (+ Wed/Fri catch-up): fetch the Rate Book's latest `rate-data.json`, rebuild, sanity-check, commit, ping IndexNow. |
 
 ## Prices
@@ -31,3 +33,7 @@ Selling price = Rate Book market price (Abuja) × (1 + `buyMargin`) × the state
 ## Changing things
 
 Edit `store-config.json`, then run `python3 pipeline/build.py` (or trigger the workflow from the Actions tab) and push. To rebuild with the newest Rate Book data locally: `python3 pipeline/build.py --fetch`.
+
+## Standard kit (same as the Rate Book and Land Value Book)
+
+Installable app (Install button, automatic install card after 4.5 s that snoozes for 7 days, iPhone/Android/desktop guide, offline page), WhatsApp button on every page, JSON-LD (Organization, WebSite search, Product, ItemList, Dataset, FAQPage, Breadcrumbs), sitemap, robots.txt allowing AI crawlers, llms.txt and llms-full.txt, open price data (`/data/prices.csv`, `/data/prices.json`, CC BY 4.0), RSS of weekly price changes (`/feed.xml`), IndexNow, cache-busted assets and a versioned service worker.

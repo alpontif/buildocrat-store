@@ -7,7 +7,7 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KEY = "04de6a9626389d0a16b71f8a9fd41e8a"
-HOST = "buildocrat.store"
+HOST = "www.buildocrat.store"
 
 urls = re.findall(r"<loc>([^<]+)</loc>", open(os.path.join(ROOT, "docs", "sitemap.xml"), encoding="utf-8").read())
 for i in range(0, len(urls), 9000):

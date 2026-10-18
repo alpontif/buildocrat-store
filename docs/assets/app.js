@@ -598,5 +598,4 @@
   if (needsCat || B.page === "home") loadCat().then(paintPrices).catch(() => {});
   ({ item: initItem, buy: initBuy, stockpile: initStockpile, sell: initSell, source: initSource, risk: initRisk, requests: initRequests }[B.page] || (() => {}))();
   if (["buy", "stockpile", "sell", "source", "risk", "materials"].includes(B.page)) loadCat().then(paintPrices).catch(() => {});
-  if ("serviceWorker" in navigator && location.protocol === "https:") window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
 })();

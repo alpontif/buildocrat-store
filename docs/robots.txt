@@ -1,5 +1,85 @@
+User-agent: GPTBot
+Allow: /
+Disallow: /requests/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /requests/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /requests/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /requests/
+
+User-agent: Claude-User
+Allow: /
+Disallow: /requests/
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /requests/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /requests/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /requests/
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /requests/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /requests/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /requests/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /requests/
+
+User-agent: Applebot
+Allow: /
+Disallow: /requests/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /requests/
+
+User-agent: CCBot
+Allow: /
+Disallow: /requests/
+
+User-agent: meta-externalagent
+Allow: /
+Disallow: /requests/
+
+User-agent: DuckAssistBot
+Allow: /
+Disallow: /requests/
+
+User-agent: YouBot
+Allow: /
+Disallow: /requests/
+
+User-agent: cohere-ai
+Allow: /
+Disallow: /requests/
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /requests/
+
 User-agent: *
 Allow: /
 Disallow: /requests/
 
-Sitemap: https://buildocrat.store/sitemap.xml
+Sitemap: https://www.buildocrat.store/sitemap.xml

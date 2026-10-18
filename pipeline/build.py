@@ -24,6 +24,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
 PIPE = os.path.join(ROOT, "pipeline")
 CFG = json.load(open(os.path.join(ROOT, "store-config.json"), encoding="utf-8"))
+SCFG = json.load(open(os.path.join(ROOT, "site-config.json"), encoding="utf-8"))
 SITE = CFG["site"].rstrip("/")
 e = html.escape
 
@@ -249,6 +250,7 @@ ICON = {
     "menu": '<path d="M4 7h16M4 12h16M4 17h16"/>',
     "pin": '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/>',
     "clock": '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    "download": '<path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>',
     "list": '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
 }
 
@@ -287,6 +289,19 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
         crumb_html = '<nav class="crumbs wrap" aria-label="Breadcrumb">' + " <span>/</span> ".join(
             f'<a href="{u}">{e(n)}</a>' if i < len(crumbs) - 1 else f"<span aria-current=\"page\">{e(n)}</span>"
             for i, (n, u) in enumerate(crumbs)) + "</nav>"
+    verify = ""
+    if SCFG.get("google_site_verification"):
+        verify += f'<meta name="google-site-verification" content="{e(SCFG["google_site_verification"])}">\n'
+    if SCFG.get("bing_site_verification"):
+        verify += f'<meta name="msvalidate.01" content="{e(SCFG["bing_site_verification"])}">\n'
+    analytics = ""
+    if SCFG.get("ga4_measurement_id"):
+        gid = e(SCFG["ga4_measurement_id"])
+        analytics += (f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>'
+                      f"<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','{gid}');</script>")
+    if SCFG.get("cloudflare_web_analytics_token"):
+        analytics += (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+                      f'data-cf-beacon=\'{{"token": "{e(SCFG["cloudflare_web_analytics_token"])}"}}\'></script>')
     boot = json.dumps({"wa": CFG["whatsapp"], "waDisplay": CFG["whatsappDisplay"], "email": CFG["email"], "v": ver,
                        "page": page})
     return f"""<!doctype html>
@@ -306,7 +321,8 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <meta property="og:url" content="{canon}">
 <meta property="og:image" content="{SITE}/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="manifest" href="/manifest.webmanifest">
+{verify}<link rel="manifest" href="/manifest.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="Buildocrat price updates" href="/feed.xml">
 <link rel="icon" href="/icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -314,6 +330,7 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/app.css?v={ver}">
 {ld_html}
+{analytics}
 </head>
 <body data-page="{page}">
 <a class="skip" href="#main">Skip to content</a>
@@ -321,6 +338,7 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
   <div class="wrap top-row">
     <a class="brand" href="/" aria-label="Buildocrat home"><span class="brand-mark">B</span><span class="brand-word">Buildocrat</span></a>
     <button class="state-btn" type="button" data-state-btn aria-label="Choose your delivery state">{icon("pin")}<span data-state-label>FCT (Abuja)</span></button>
+    <button class="state-btn install-btn" type="button" data-install hidden aria-label="Install the Buildocrat app">{icon("download")}<span>Install</span></button>
     <a class="cart-btn" href="/buy/#cart" aria-label="Your cart">{icon("cart")}<span class="cart-count" data-cart-count hidden>0</span></a>
   </div>
   <nav class="tabs" aria-label="Main"><div class="wrap tabs-row">{nav}</div></nav>
@@ -347,6 +365,8 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
       <p><a href="/materials/">All materials &amp; prices</a></p>
       <p><a href="/help/">How it works &amp; FAQ</a></p>
       <p><a href="/requests/">My requests</a></p>
+      <p><a href="/materials/#open-data">Open price data (CSV / JSON)</a></p>
+      <p><button class="linkbtn" type="button" data-install hidden>Install the app</button></p>
       <p><a href="{CFG["rateBookUrl"]}">Nigeria Construction Rate Book</a></p>
       <p><a href="{CFG["landValueUrl"]}">Nigeria Land Value Book</a></p>
     </div>
@@ -357,6 +377,7 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <div class="sheet" data-sheet hidden></div>
 <script>window.BDC={boot};</script>
 <script src="/assets/app.js?v={ver}" defer></script>
+<script src="/assets/pwa.js?v={ver}" defer></script>
 </body>
 </html>
 """
@@ -770,10 +791,23 @@ def page_materials_index(cat, ver):
   <p class="lede">{len(cat["items"])} materials with Buildocrat selling prices, updated {fdate(cat["updated"])}. Prices show for <b data-state-label>FCT (Abuja)</b>; change your state at the top.</p>
 </section>
 <section class="wrap block">{sec("Building materials", "building")}{sec("Infrastructure &amp; industrial", "infrastructure")}</section>
+<section class="wrap block" id="open-data">
+  <div class="card note">
+    <h2>Open price data</h2>
+    <p>Download every Buildocrat selling price (Abuja base, before delivery), free to use with credit to Buildocrat. Updated weekly from the <a href="{CFG["rateBookUrl"]}">Nigeria Construction Rate Book</a>.</p>
+    <div class="dl"><a class="btn btn-ghost btn-sm" href="/data/prices.csv" download>{icon("download")} prices.csv</a><a class="btn btn-ghost btn-sm" href="/data/prices.json" download>{icon("download")} prices.json</a><a class="btn btn-ghost btn-sm" href="/feed.xml">RSS: weekly price changes</a></div>
+  </div>
+</section>
 """
+    ds = {"@context": "https://schema.org", "@type": "Dataset", "name": "Buildocrat building material prices, Nigeria",
+          "description": f"{len(cat['items'])} building and infrastructure material selling prices in Nigerian naira, Abuja base with state factors, updated weekly.",
+          "url": SITE + "/materials/", "dateModified": cat["updated"], "license": "https://creativecommons.org/licenses/by/4.0/",
+          "creator": {"@type": "Organization", "name": "Buildocrat", "url": SITE}, "spatialCoverage": "Nigeria", "inLanguage": "en-NG",
+          "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": SITE + "/data/prices.csv"},
+                           {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": SITE + "/data/prices.json"}]}
     return layout("/materials/", f"Building material prices in Nigeria ({fdate(cat['updated'])}) — Buildocrat",
                   "Current prices of cement, iron rods, blocks, sand, granite, roofing, timber, tiles, paint, plumbing and electrical materials in Nigeria, by state.",
-                  body, "materials", ver, crumbs=[("Home", "/"), ("Materials", "/materials/")])
+                  body, "materials", ver, ds, crumbs=[("Home", "/"), ("Materials", "/materials/")])
 
 
 def page_group(cat, g, items, ver):
@@ -888,9 +922,86 @@ def make_icons():
 
 def asset_hash():
     h = hashlib.sha1()
-    for f in ("app.css", "app.js"):
+    for f in ("app.css", "app.js", "pwa.js"):
         h.update(open(os.path.join(DOCS, "assets", f), "rb").read())
     return h.hexdigest()[:10]
+
+
+AI_BOTS = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-User', 'Claude-SearchBot', 'anthropic-ai', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Googlebot', 'Bingbot', 'Applebot', 'Applebot-Extended', 'CCBot', 'meta-externalagent', 'DuckAssistBot', 'YouBot', 'cohere-ai', 'Amazonbot']
+
+
+def write_extras(cat, d, ver):
+    """robots, open data, feed, llms-full and the offline page — the standard kit on every Buildocrat site."""
+    import csv
+    import io
+    robots = "".join(f"User-agent: {b}\nAllow: /\nDisallow: /requests/\n\n" for b in AI_BOTS)
+    write("robots.txt", robots + f"User-agent: *\nAllow: /\nDisallow: /requests/\n\nSitemap: {SITE}/sitemap.xml\n")
+
+    gname = {g["s"]: g["n"] for g in cat["groups"]}
+    rows = [{"code": i["c"], "material": i["d"], "category": gname[i["g"]], "unit": unit_word(i["u"]),
+             "price_ngn_abuja": i["p"], "low_ngn": i["lo"], "high_ngn": i["hi"], "previous_ngn": i["pr"] or "",
+             "price_checked": i["set"] or "", "confidence": i["conf"] or "", "url": SITE + i["s"]} for i in cat["items"]]
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=list(rows[0].keys()))
+    w.writeheader(); w.writerows(rows)
+    write("data/prices.csv", buf.getvalue())
+    write("data/prices.json", json.dumps({
+        "source": "Buildocrat (www.buildocrat.store), built from the Nigeria Construction Rate Book",
+        "licence": "CC BY 4.0, credit Buildocrat", "updated": cat["updated"], "currency": "NGN",
+        "basis": f"Buildocrat selling price, Abuja, before delivery (rate book market price + {round(CFG['buyMargin'] * 100)}% margin)",
+        "state_factors": {s_["n"]: s_["f"] for s_ in cat["states"]}, "items": rows}, ensure_ascii=False, indent=1))
+
+    # feed: one entry per Rate Book edition, history kept in pipeline/feed-history.json
+    hist_path = os.path.join(PIPE, "feed-history.json")
+    hist = json.load(open(hist_path, encoding="utf-8")) if os.path.exists(hist_path) else []
+    if not any(h["date"] == cat["updated"] for h in hist):
+        moved = sorted([i for i in cat["items"] if i["pr"] and i["pr"] != i["p"]], key=lambda i: -abs(i["p"] - i["pr"]) / i["pr"])
+        lines = [f"{i['d']}: {naira(i['pr'])} → {naira(i['p'])} per {unit_word(i['u'])}" for i in moved[:25]]
+        hist.insert(0, {"date": cat["updated"], "count": len(moved), "lines": lines})
+        hist = hist[:52]
+        json.dump(hist, open(hist_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    items = []
+    for h in hist:
+        pub = dt.datetime.fromisoformat(h["date"]).strftime("%a, %d %b %Y 09:00:00 +0100")
+        body = ("<ul>" + "".join(f"<li>{e(x)}</li>" for x in h["lines"]) + "</ul>") if h["lines"] else "<p>No price changes this week.</p>"
+        items.append(f"<item><title>Building material prices, {e(fdate(h['date']))}: {h['count']} changes</title>"
+                     f"<link>{SITE}/materials/</link><guid isPermaLink=\"false\">bdc-prices-{h['date']}</guid><pubDate>{pub}</pubDate>"
+                     f"<description><![CDATA[{body}<p>See all prices at {SITE}/materials/</p>]]></description></item>")
+    write("feed.xml", f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>
+<title>Buildocrat — building material price updates</title><link>{SITE}/</link>
+<atom:link href="{SITE}/feed.xml" rel="self" type="application/rss+xml"/>
+<description>Weekly changes to Buildocrat's building material prices in Nigeria.</description><language>en-NG</language>
+{"".join(items)}
+</channel></rss>
+""")
+
+    full = [f"# Buildocrat — full price list ({fdate(cat['updated'])})", "",
+            f"Buildocrat selling prices in naira, Abuja, before delivery. Other states: multiply by the state factor. Order on WhatsApp {CFG['whatsappDisplay']} or at {SITE}/buy/.",
+            "", "## State factors", ""] + [f"- {s_['n']}: ×{s_['f']}" for s_ in cat["states"]]
+    for g in cat["groups"]:
+        full += ["", f"## {g['n']}", ""]
+        full += [f"- {i['d']}: {naira(i['p'])} per {unit_word(i['u'])} ({SITE}{i['s']})" for i in cat["items"] if i["g"] == g["s"]]
+    full += ["", "## Stockpile bundle offers", ""]
+    by = {i["c"]: i for i in cat["items"]}
+    for b in cat["bundles"]:
+        m = sum(by[c]["p"] * q for c, q in b["lines"])
+        full.append(f"- {b['name']} ({b['for']}): {naira(m * (1 - b['discount']))} paid in full, Abuja (market value {naira(m)})")
+    full += ["", "## FAQ", ""] + [f"Q: {q}\nA: {a}\n" for q, a in FAQ]
+    write("llms-full.txt", "\n".join(full) + "\n")
+
+    write("offline.html", """<!doctype html><html lang="en-NG"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offline | Buildocrat</title><meta name="robots" content="noindex"><meta name="theme-color" content="#0B3D2A">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F4F6F2;color:#0F1A14;font:16px/1.55 Inter,system-ui,sans-serif;padding:16px;box-sizing:border-box}
+.c{background:#fff;border-radius:22px;max-width:440px;padding:30px 28px;box-shadow:0 10px 30px rgba(11,61,42,.12)}
+img{width:56px;height:56px;border-radius:14px}h1{color:#0B3D2A;font-size:1.5rem;margin:14px 0 6px;line-height:1.2}
+a{display:inline-block;margin:14px 8px 0 0;background:#00A651;color:#fff;text-decoration:none;font-weight:700;padding:10px 20px;border-radius:999px}
+@media (prefers-color-scheme:dark){body{background:#0C130F;color:#ECF3EE}.c{background:#141F19}h1{color:#7EE2A8}}</style></head>
+<body><div class="c"><img src="/icons/icon-192.png" alt=""><h1>You're offline</h1>
+<p>This page isn't saved on this device yet. The shop, stockpile offers and this week's prices still open offline from your last visit. Your cart is kept; send the order when you're back online.</p>
+<a href="/buy/">Open the shop</a><a href="/stockpile/">Stockpile offers</a></div></body></html>
+""")
 
 
 def main(argv):
@@ -941,7 +1052,7 @@ def main(argv):
         sm.append(f"<url><loc>{SITE}{p}</loc><lastmod>{today}</lastmod><priority>{pri}</priority></url>")
     sm.append("</urlset>")
     write("sitemap.xml", "\n".join(sm))
-    write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /requests/\n\nSitemap: {SITE}/sitemap.xml\n")
+    write_extras(cat, d, ver)
     write("CNAME", SITE.split("//")[1] + "\n")
     write(".nojekyll", "")
 
@@ -963,6 +1074,11 @@ Prices updated: {today}. {len(cat['items'])} material lines.
 - [Risk control]({SITE}/risk-control/): estimate material price exposure and request a risk plan.
 - [All materials]({SITE}/materials/)
 - [How it works & FAQ]({SITE}/help/)
+
+## Data
+- [Full price list for AI assistants]({SITE}/llms-full.txt)
+- [All prices, CSV]({SITE}/data/prices.csv) and [JSON]({SITE}/data/prices.json) (CC BY 4.0)
+- [Weekly price changes, RSS]({SITE}/feed.xml)
 """)
 
     manifest = {
@@ -978,22 +1094,26 @@ Prices updated: {today}. {len(cat['items'])} material lines.
     write("manifest.webmanifest", json.dumps(manifest, indent=1))
     write("sw.js", f"""// Buildocrat service worker, edition {ver}
 const V = "bdc-{ver}";
-const SHELL = ["/", "/buy/", "/stockpile/", "/sell/", "/source/", "/risk-control/", "/help/", "/requests/",
-  "/assets/app.css?v={ver}", "/assets/app.js?v={ver}", "/data/catalog.json?v={ver}", "/icons/icon-192.png"];
+const SHELL = ["/", "/buy/", "/stockpile/", "/sell/", "/source/", "/risk-control/", "/help/", "/requests/", "/materials/", "/offline.html",
+  "/assets/app.css?v={ver}", "/assets/app.js?v={ver}", "/assets/pwa.js?v={ver}", "/data/catalog.json?v={ver}", "/icons/icon-192.png", "/manifest.webmanifest"];
 self.addEventListener("install", ev => {{ ev.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); }});
 self.addEventListener("activate", ev => {{ ev.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); }});
+self.addEventListener("message", ev => {{
+  if (ev.data && ev.data.t === "warm") caches.open(V).then(c => Promise.all(ev.data.urls.map(u => c.match(u).then(hit => hit || c.add(u).catch(() => {{}})))));
+}});
 self.addEventListener("fetch", ev => {{
   const u = new URL(ev.request.url);
   if (ev.request.method !== "GET" || u.origin !== location.origin) return;
   if (ev.request.mode === "navigate") {{
-    ev.respondWith(fetch(ev.request).then(r => {{ const c = r.clone(); caches.open(V).then(x => x.put(ev.request, c)); return r; }})
-      .catch(() => caches.match(ev.request).then(r => r || caches.match("/"))));
+    ev.respondWith(fetch(ev.request).then(r => {{ if (r.ok) {{ const c = r.clone(); caches.open(V).then(x => x.put(ev.request, c)); }} return r; }})
+      .catch(() => caches.match(ev.request, {{ ignoreSearch: true }}).then(r => r || caches.match("/offline.html"))));
     return;
   }}
   ev.respondWith(caches.match(ev.request).then(r => r || fetch(ev.request).then(res => {{
     if (res.ok) {{ const c = res.clone(); caches.open(V).then(x => x.put(ev.request, c)); }} return res; }})));
 }});
 """)
+
     print(f"Built {len(urls)} indexable pages, {len(cat['items'])} materials, {len(cat['groups'])} groups, "
           f"{len(cat['bundles'])} bundles; prices dated {today}; version {ver}")
 
