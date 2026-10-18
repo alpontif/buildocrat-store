@@ -1,0 +1,47 @@
+name: Refresh prices from the Rate Book
+
+# The Rate Book (alpontif/buildocrat-rate-book) is refreshed on Mondays.
+# This pulls its rate-data.json, rebuilds the store and publishes.
+on:
+  schedule:
+    - cron: "37 15 * * 1"   # Monday 16:37 Nigeria time
+    - cron: "37 9 * * 3,5"  # Wednesday and Friday catch-up
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build from latest Rate Book data
+        run: python3 pipeline/build.py --fetch
+      - name: Sanity check
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          c = json.load(open("docs/data/catalog.json"))
+          by = {i["c"]: i for i in c["items"]}
+          ok = len(c["items"]) > 500 and 5000 < by["M-CEM-01"]["p"] < 40000 and 400000 < by["M-STL-01"]["p"] < 4000000
+          print(len(c["items"]), "items; cement", by["M-CEM-01"]["p"], "rebar", by["M-STL-01"]["p"])
+          sys.exit(0 if ok else 1)
+          EOF
+      - name: Commit and push if anything changed
+        id: commit
+        run: |
+          git config user.name "Buildocrat bot"
+          git config user.email "buildocrat@gmail.com"
+          git add -A docs pipeline/rate-data.json
+          if git diff --cached --quiet; then echo "changed=no" >> "$GITHUB_OUTPUT"; echo "No changes"; exit 0; fi
+          git commit -m "Price refresh from Rate Book $(date -u +%Y-%m-%d)"
+          git push
+          echo "changed=yes" >> "$GITHUB_OUTPUT"
+      - name: Notify search engines
+        if: steps.commit.outputs.changed == 'yes'
+        run: sleep 120 && python3 pipeline/indexnow.py

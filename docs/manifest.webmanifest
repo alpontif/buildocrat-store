@@ -1,0 +1,46 @@
+{
+ "name": "Buildocrat \u2014 building materials",
+ "short_name": "Buildocrat",
+ "start_url": "/?src=app",
+ "scope": "/",
+ "display": "standalone",
+ "background_color": "#F4F6F2",
+ "theme_color": "#0B3D2A",
+ "description": "Buy, stockpile, sell and source building materials in Nigeria.",
+ "icons": [
+  {
+   "src": "/icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "/icons/maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Buy materials",
+   "url": "/buy/"
+  },
+  {
+   "name": "Stockpile offers",
+   "url": "/stockpile/"
+  },
+  {
+   "name": "Price Lock",
+   "url": "/stockpile/#lock"
+  },
+  {
+   "name": "Sell materials",
+   "url": "/sell/"
+  }
+ ]
+}

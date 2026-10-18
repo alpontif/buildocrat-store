@@ -1,0 +1,111 @@
+{
+  "_readme": "Business settings for buildocrat.store. Edit numbers here, then run python3 pipeline/build.py (or let the weekly Action do it). Percentages are decimals: 0.05 = 5%.",
+
+  "site": "https://buildocrat.store",
+  "brand": "Buildocrat",
+  "legalName": "Buildocrat Property Technologies Ltd",
+  "whatsapp": "2347018024292",
+  "whatsappDisplay": "+234 701 802 4292",
+  "email": "buildocrat@gmail.com",
+  "address": "No 30 Anthony Enahoro Street, Utako, Abuja",
+  "rateBookUrl": "https://rates.buildocrat.store",
+  "landValueUrl": "https://value.buildocrat.store",
+  "rateDataUrl": "https://raw.githubusercontent.com/alpontif/buildocrat-rate-book/main/rate-data.json",
+
+  "buyMargin": 0.05,
+  "_buyMargin": "Added to the rate book market price (Abuja) to give the Buildocrat selling price shown on the site.",
+
+  "stateExtra": {
+    "Borno": 0.04, "Yobe": 0.04, "Adamawa": 0.03, "Taraba": 0.03, "Sokoto": 0.03,
+    "Kebbi": 0.03, "Zamfara": 0.03, "Bayelsa": 0.05, "Cross River": 0.02, "Ebonyi": 0.01
+  },
+  "_stateExtra": "Extra uplift on top of the nearest rate-book city factor for states far from a hub. Delivery itself is always quoted separately on WhatsApp.",
+
+  "bundles": {
+    "payInFullDiscount": 0.03,
+    "plans": [
+      {"id": "full", "label": "Pay in full", "premium": 0, "upfront": 1.0, "months": 0, "note": "Bundle discount applies"},
+      {"id": "m3", "label": "3-month plan", "premium": 0.02, "upfront": 0.4, "months": 3, "note": "40% now, the rest in 2 monthly payments"},
+      {"id": "m6", "label": "6-month plan", "premium": 0.05, "upfront": 0.3, "months": 6, "note": "30% now, the rest in 5 monthly payments"}
+    ],
+    "holdMonths": 6,
+    "_holdMonths": "How long Buildocrat holds a paid stockpile for call-off delivery."
+  },
+
+  "priceLock": {
+    "_status": "PLACEHOLDER spreads: replace with the v4.1 spread schedule before launch.",
+    "segments": [
+      {"id": "b2c", "label": "Individual / family build", "deposit": 0.10},
+      {"id": "diaspora", "label": "Diaspora client", "deposit": 0.15},
+      {"id": "mid", "label": "Developer or contractor (mid-market)", "deposit": 0.20},
+      {"id": "inst", "label": "Institution / large developer", "deposit": 0.10}
+    ],
+    "tenors": [
+      {"months": 3, "spread": 0.025},
+      {"months": 6, "spread": 0.045},
+      {"months": 9, "spread": 0.065},
+      {"months": 12, "spread": 0.085}
+    ],
+    "eligibleGroups": ["cement", "reinforcement-steel", "blocks-bricks-precast", "aggregates", "roofing"],
+    "minValue": 2000000
+  },
+
+  "risk": {
+    "inflationBase": 0.20,
+    "inflationHigh": 0.40,
+    "_inflation": "Default yearly rise in building-material prices used by the Risk Check; visitors can change it on the page.",
+    "materialsShare": 0.55
+  },
+
+  "bundleList": [
+    {
+      "id": "foundation-pack",
+      "name": "Foundation Pack",
+      "for": "3-bedroom bungalow, foundation to DPC",
+      "discount": 0.03,
+      "lines": [["M-CEM-01", 300], ["M-AGG-07", 2], ["M-AGG-01", 2], ["M-STL-01", 1.5], ["M-STL-04", 2], ["M-BLK-01", 1200], ["M-WP-06", 4]]
+    },
+    {
+      "id": "shell-pack",
+      "name": "Bungalow Shell Pack",
+      "for": "3-bedroom bungalow walls, lintels and columns",
+      "discount": 0.03,
+      "lines": [["M-BLK-01", 4500], ["M-BLK-02", 1000], ["M-CEM-01", 250], ["M-AGG-01", 3], ["M-AGG-07", 1], ["M-STL-01", 0.8], ["M-STL-03", 0.3], ["M-STL-04", 1]]
+    },
+    {
+      "id": "roofing-pack",
+      "name": "Roofing Pack",
+      "for": "About 220 m² of roof: timber, longspan and accessories",
+      "discount": 0.03,
+      "lines": [["M-RF-01", 220], ["M-RF-06", 30], ["M-RF-17", 10], ["M-TMB-03", 120], ["M-TMB-02", 80], ["M-TMB-04", 30], ["M-RF-07", 60], ["M-STL-44", 15], ["M-TMB-07", 10]]
+    },
+    {
+      "id": "duplex-frame-pack",
+      "name": "Duplex Frame Pack",
+      "for": "4-bedroom duplex frame: columns, beams and slab",
+      "discount": 0.035,
+      "lines": [["M-CEM-01", 900], ["M-STL-01", 6], ["M-STL-02", 2], ["M-STL-03", 1.5], ["M-AGG-07", 5], ["M-AGG-01", 6], ["M-STL-04", 8], ["M-TMB-06", 80], ["M-TMB-02", 300], ["M-TMB-19", 400]]
+    },
+    {
+      "id": "finishing-pack",
+      "name": "Finishing Pack",
+      "for": "About 150 m² of tiling plus internal and external painting",
+      "discount": 0.03,
+      "lines": [["M-FIN-01", 150], ["M-CEM-03", 60], ["M-CEM-04", 40], ["M-FIN-15", 120], ["M-CEM-06", 40], ["M-FIN-04", 12], ["M-FIN-06", 6], ["M-FIN-27", 4]]
+    },
+    {
+      "id": "cement-trailer",
+      "name": "Cement Trailer Stockpile",
+      "for": "600 bags of 42.5 cement, one trailer, held for call-off",
+      "discount": 0.04,
+      "lines": [["M-CEM-01", 600]]
+    },
+    {
+      "id": "rebar-10t",
+      "name": "Rebar 10-Tonne Stockpile",
+      "for": "10 tonnes of 12–16 mm high-yield rebar, held for call-off",
+      "discount": 0.04,
+      "lines": [["M-STL-01", 10]]
+    }
+  ]
+}
