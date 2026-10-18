@@ -362,7 +362,7 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <header class="top">
   <div class="wrap top-row">
     <a class="brand" href="/" aria-label="Buildocrat home"><span class="brand-mark"><svg viewBox="0 0 40 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#165E57"/><circle cx="27" cy="13" r="12" fill="#C7E8A4" fill-opacity=".92"/></svg></span><span class="brand-word">Buildocrat</span></a>
-    <button class="state-btn" type="button" data-state-btn aria-label="Choose your delivery state">{icon("pin")}<span data-state-label>FCT (Abuja)</span></button>
+    <button class="state-btn loc-btn" type="button" data-state-btn aria-label="Delivery state: change where prices are for">{icon("pin")}<span class="loc-txt"><small>Deliver to</small><span data-state-label>FCT (Abuja)</span></span><svg class="ic chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
     <button class="state-btn install-btn" type="button" data-install hidden aria-label="Install the Buildocrat app">{icon("download")}<span>Install</span></button>
     <a class="cart-btn" href="/buy/#cart" aria-label="Your cart">{icon("cart")}<span class="cart-count" data-cart-count hidden>0</span></a>
   </div>
@@ -473,7 +473,7 @@ def page_home(cat, ver):
   <div class="bx pcard s5">
     <div class="pcard-top">
       <div class="bx-head"><span class="mask">**** RC {CFG["rc"]}</span>{coin()}</div>
-      <span class="lbl">{e(short_name(hero))} · <b data-state-label>FCT (Abuja)</b></span>
+      <span class="lbl">{e(short_name(hero))} · <b data-state-label>FCT (Abuja)</b> <button class="chg" type="button" data-state-btn>Change</button></span>
       <div class="bx-head" style="align-items:flex-end;margin:0"><div class="big-num" data-price="{hero["c"]}">{naira(hero["p"])}</div>{pill}</div>
     </div>
     <div class="pcard-list">{rows}</div>
@@ -567,7 +567,7 @@ def page_buy(cat, ver):
     body = f"""
 <section class="wrap page-head">
   <h1>Buy building materials</h1>
-  <p class="lede">Prices are for <b data-state-label>FCT (Abuja)</b>, before delivery. Add items to your cart, then send the order to WhatsApp. Nothing is charged here.</p>
+  <p class="lede">Prices are for <b data-state-label>FCT (Abuja)</b> <button class="chg" type="button" data-state-btn>Change</button>, before delivery. Add items to your cart, then send the order to WhatsApp. Nothing is charged here.</p>
 </section>
 <section class="wrap shop" data-shop>
   <div class="shop-tools">
@@ -826,6 +826,7 @@ def page_requests(ver):
 FAQ = [
     ("How do I pay?", "After you send your order, a Buildocrat person confirms stock, delivery cost and dates in the WhatsApp chat and sends an invoice. You pay by bank transfer into a Buildocrat Property Technologies Ltd company account (CAC RC 7019619) named on the invoice. We never ask you to pay into a personal account."),
     ("Are the prices on the site final?", "They are our current selling prices for your state, built from the weekly Nigeria Construction Rate Book plus our margin. Delivery is added per order, and we confirm the final price in writing before you pay. Prices can move during the week; the invoice price is the one you pay."),
+    ("How do I change my location?", "Tap the “Deliver to” button at the top of every page (it shows a map pin and your state), or any “Change” link next to a price. Pick your state from the list, type to search, or tap “Use my location”. Every price, bundle and Price Lock on the site updates at once, and your choice is remembered on this device."),
     ("Do you deliver outside Abuja?", "Yes, to all 36 states and the FCT. Prices on the site adjust to your state; delivery is quoted separately because it depends on distance, access and load size."),
     ("What is Price Lock?", "Price Lock fixes today's price on cement, iron rods, blocks, sand, granite and roofing for 3 to 12 months. You pay an activation deposit, then pay for each draw-down at the locked price. There are no fees: the locked price includes a fixed spread, which is all we earn."),
     ("What is a stockpile offer?", "A ready-made bundle (for example a foundation pack or a trailer of cement) at a discount if you pay in full, or on a 3 or 6-month plan at a fixed price. We hold the materials and deliver whenever you call them off within the hold period."),
@@ -885,7 +886,7 @@ def page_materials_index(cat, ver):
     body = f"""
 <section class="wrap page-head">
   <h1>Building material prices in Nigeria</h1>
-  <p class="lede">{len(cat["items"])} materials with Buildocrat selling prices, updated {fdate(cat["updated"])}. Prices show for <b data-state-label>FCT (Abuja)</b>; change your state at the top.</p>
+  <p class="lede">{len(cat["items"])} materials with Buildocrat selling prices, updated {fdate(cat["updated"])}. Prices show for <b data-state-label>FCT (Abuja)</b> <button class="chg" type="button" data-state-btn>Change</button>.</p>
 </section>
 <section class="wrap block">{sec("Building materials", "building")}{sec("Infrastructure &amp; industrial", "infrastructure")}</section>
 <section class="wrap block" id="open-data">
@@ -913,7 +914,7 @@ def page_group(cat, g, items, ver):
     body = f"""
 <section class="wrap page-head">
   <h1>{e(g["n"])} prices in Nigeria</h1>
-  <p class="lede">{e(intro)} Prices for <b data-state-label>FCT (Abuja)</b>, updated {fdate(cat["updated"])}, before delivery.</p>
+  <p class="lede">{e(intro)} Prices for <b data-state-label>FCT (Abuja)</b> <button class="chg" type="button" data-state-btn>Change</button>, updated {fdate(cat["updated"])}, before delivery.</p>
   <p><a class="btn btn-primary btn-sm" href="/buy/?g={g["s"]}">{icon("cart")} Shop {e(g["n"].lower())}</a></p>
 </section>
 <section class="wrap"><ul class="plist static">{rows}</ul></section>
@@ -941,7 +942,7 @@ def page_item(cat, i, g, related, ver, loc_rows):
     <h1>{e(i["d"])}</h1>
     {sf}
     <div class="price-box">
-      <div><span class="small muted">Buildocrat price · <b data-state-label>FCT (Abuja)</b></span>
+      <div><span class="small muted">Buildocrat price · <b data-state-label>FCT (Abuja)</b> <button class="chg" type="button" data-state-btn>Change</button></span>
       <div class="big-price"><span data-price="{i["c"]}">{naira(i["p"])}</span> <small>per {e(unit_word(i["u"]))}</small></div>
       <span class="small muted">Market range {rng} · checked {fdate(i["set"] or upd)} · delivery quoted separately</span></div>
     </div>
@@ -956,7 +957,7 @@ def page_item(cat, i, g, related, ver, loc_rows):
   <aside class="card side">
     <h2 class="h3">Price by city</h2>
     <table class="loc"><tbody>{loc_rows}</tbody></table>
-    <p class="small muted">Before delivery. Other states use their nearest city.</p>
+    <p class="small muted">Before delivery. Other states use their nearest city. <button class="chg" type="button" data-state-btn>Set my state</button></p>
   </aside>
 </section>
 <section class="wrap block"><h2 class="sec-title">Related {e(g["n"].lower())}</h2><ul class="plist static">{rel}</ul></section>

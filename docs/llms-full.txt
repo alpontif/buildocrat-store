@@ -927,6 +927,9 @@ A: After you send your order, a Buildocrat person confirms stock, delivery cost 
 Q: Are the prices on the site final?
 A: They are our current selling prices for your state, built from the weekly Nigeria Construction Rate Book plus our margin. Delivery is added per order, and we confirm the final price in writing before you pay. Prices can move during the week; the invoice price is the one you pay.
 
+Q: How do I change my location?
+A: Tap the “Deliver to” button at the top of every page (it shows a map pin and your state), or any “Change” link next to a price. Pick your state from the list, type to search, or tap “Use my location”. Every price, bundle and Price Lock on the site updates at once, and your choice is remembered on this device.
+
 Q: Do you deliver outside Abuja?
 A: Yes, to all 36 states and the FCT. Prices on the site adjust to your state; delivery is quoted separately because it depends on distance, access and load size.
 

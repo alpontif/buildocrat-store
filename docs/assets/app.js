@@ -84,19 +84,72 @@
     document.body.appendChild(t); setTimeout(() => t.remove(), 2200);
   }
 
+  // state capitals, for "Use my location" (nearest capital wins; the visitor confirms)
+  const CAPS = { "Abia": [5.52, 7.49], "Adamawa": [9.21, 12.48], "Akwa Ibom": [5.03, 7.93], "Anambra": [6.21, 7.07], "Bauchi": [10.31, 9.84],
+    "Bayelsa": [4.92, 6.26], "Benue": [7.73, 8.54], "Borno": [11.83, 13.15], "Cross River": [4.95, 8.32], "Delta": [6.2, 6.73],
+    "Ebonyi": [6.32, 8.11], "Edo": [6.34, 5.63], "Ekiti": [7.62, 5.22], "Enugu": [6.45, 7.51], "FCT (Abuja)": [9.06, 7.49],
+    "Gombe": [10.29, 11.17], "Imo": [5.48, 7.03], "Jigawa": [11.76, 9.34], "Kaduna": [10.52, 7.44], "Kano": [12.0, 8.52],
+    "Katsina": [12.99, 7.6], "Kebbi": [12.45, 4.2], "Kogi": [7.8, 6.74], "Kwara": [8.5, 4.55], "Lagos": [6.6, 3.35],
+    "Nasarawa": [8.49, 8.52], "Niger": [9.61, 6.56], "Ogun": [7.15, 3.35], "Ondo": [7.25, 5.19], "Osun": [7.77, 4.56],
+    "Oyo": [7.38, 3.94], "Plateau": [9.9, 8.86], "Rivers": [4.82, 7.03], "Sokoto": [13.06, 5.24], "Taraba": [8.89, 11.36],
+    "Yobe": [11.75, 11.96], "Zamfara": [12.16, 6.66] };
+  const PIN = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>';
+  const CHG = '<button class="chg" type="button" data-state-btn>Change</button>';
+  function setState(name, how) {
+    LS.set("state", name); LS.set("stateChosen", 1); hideHint();
+    paintPrices(); document.dispatchEvent(new CustomEvent("bdc:state"));
+    toast((how || "Prices now for ") + name);
+  }
   function pickState() {
     loadCat().then(() => {
       const cur = stateName();
-      const box = openSheet("Deliver to which state?", `<p class="small muted">Prices adjust to your state. Delivery is quoted on WhatsApp.</p><div class="state-list">${CAT.states.map(s => `<button type="button" data-st="${esc(s.n)}" aria-pressed="${s.n === cur}">${esc(s.n)}</button>`).join("")}</div>`);
+      const box = openSheet("Where are you building?", `
+        <p class="small muted" style="margin-top:-4px">Every price on the site updates to your state. Delivery is quoted on WhatsApp.</p>
+        <div class="loc-tools">
+          <label class="search loc-search">${PIN}<input type="search" placeholder="Type your state, e.g. Rivers" data-st-q aria-label="Search states"></label>
+          ${navigator.geolocation ? '<button class="btn btn-ghost btn-sm" type="button" data-geo>Use my location</button>' : ""}
+        </div>
+        <p class="small" data-geo-msg hidden></p>
+        <div class="state-list">${CAT.states.map(s => `<button type="button" data-st="${esc(s.n)}" aria-pressed="${s.n === cur}">${esc(s.n)}</button>`).join("")}</div>`);
+      const q = box.querySelector("[data-st-q]");
+      q.addEventListener("input", () => {
+        const v = q.value.trim().toLowerCase();
+        $$("[data-st]", box).forEach(b => { b.hidden = v && !b.dataset.st.toLowerCase().includes(v); });
+      });
+      q.addEventListener("keydown", ev => { if (ev.key === "Enter") { const b = $$("[data-st]", box).find(x => !x.hidden); if (b) b.click(); } });
       box.addEventListener("click", ev => {
-        const b = ev.target.closest("[data-st]"); if (!b) return;
-        LS.set("state", b.dataset.st); closeSheet(); paintPrices();
-        document.dispatchEvent(new CustomEvent("bdc:state"));
-        toast("Prices now for " + b.dataset.st);
+        const b = ev.target.closest("[data-st]");
+        if (b) { closeSheet(); setState(b.dataset.st); return; }
+        const g = ev.target.closest("[data-geo]"); if (!g) return;
+        const msg = box.querySelector("[data-geo-msg]"); msg.hidden = false; msg.textContent = "Finding your location…";
+        navigator.geolocation.getCurrentPosition(pos => {
+          const { latitude: la, longitude: lo } = pos.coords; let best = null, bd = 1e9;
+          Object.keys(CAPS).forEach(k => { const [a, o] = CAPS[k]; const dd = (a - la) ** 2 + ((o - lo) * Math.cos(la * Math.PI / 180)) ** 2; if (dd < bd) { bd = dd; best = k; } });
+          if (best && bd < 25) { closeSheet(); setState(best, "Location found. Prices now for "); }
+          else msg.textContent = "You seem to be outside Nigeria. Pick the state you're building in from the list.";
+        }, () => { msg.textContent = "Couldn't get your location. Pick your state from the list instead."; }, { timeout: 10000, maximumAge: 600000 });
       });
     });
   }
-  $$("[data-state-btn]").forEach(b => b.addEventListener("click", pickState));
+  document.addEventListener("click", ev => { const b = ev.target.closest("[data-state-btn]"); if (b) { ev.preventDefault(); hideHint(); pickState(); } });
+
+  // first visit: point at the location button once, until the visitor chooses or dismisses
+  let hint = null;
+  function hideHint() { if (hint) { hint.remove(); hint = null; } }
+  function maybeHint() {
+    if (LS.get("stateChosen", 0) || LS.get("hintSeen", 0) || !$(".loc-btn")) return;
+    if (["requests", "404"].includes(B.page)) return;
+    LS.set("hintSeen", 1);
+    hint = document.createElement("div"); hint.className = "loc-hint"; hint.setAttribute("role", "dialog"); hint.setAttribute("aria-label", "Set your delivery state");
+    hint.innerHTML = `<b>Building outside Abuja?</b><span>Prices are showing for <b>${esc(stateName())}</b>. Set your state here and every price updates.</span>
+      <div class="cta-row" style="margin:8px 0 0"><button class="btn btn-primary btn-sm" type="button" data-state-btn>Choose my state</button><button class="btn btn-ghost btn-sm" type="button" data-hint-ok>Keep ${esc(stateName())}</button></div>`;
+    document.body.appendChild(hint);
+    const place = () => { if (!hint) return; const r = $(".loc-btn").getBoundingClientRect(); hint.style.top = (r.bottom + 10) + "px"; const hr = hint.getBoundingClientRect(); hint.style.setProperty("--ax", Math.max(14, Math.min(hr.width - 28, r.left + r.width / 2 - hr.left - 7)) + "px"); };
+    place(); addEventListener("resize", place); addEventListener("scroll", place, { passive: true });
+    hint.querySelector("[data-hint-ok]").addEventListener("click", () => { LS.set("stateChosen", 1); hideHint(); });
+  }
+  setTimeout(maybeHint, 1200);
+
 
   // ------------------------------------------------------- whatsapp hand-off
   function makeRef(letter) {
@@ -227,7 +280,7 @@
     }
     function render() {
       const res = matches(); const cart = getCart();
-      countEl.textContent = res.length ? `${res.length.toLocaleString()} materials · prices for ${stateName()}, before delivery` : "No match. Try another word, or send us a sourcing request.";
+      countEl.innerHTML = res.length ? `${res.length.toLocaleString()} materials · prices for <b>${esc(stateName())}</b> ${CHG}, before delivery` : "No match. Try another word, or send us a sourcing request.";
       list.innerHTML = res.slice(0, shown).map(i => {
         const inC = cart[i.c];
         return `<li class="prow" data-code="${i.c}"><div class="pinfo"><a class="pname" href="${i.s}">${esc(i.d)}</a>
@@ -270,7 +323,7 @@
         ${lines.map(l => `<div class="cart-line" data-code="${l.i.c}"><div><div class="cl-n">${esc(l.i.d)}</div><div class="small muted">${fmt(price(l.i))} per ${esc(uw(l.i.u))}</div></div>
           <div class="cl-t">${fmt(price(l.i) * l.q)}</div><div>${qtyBox(l.q, stepFor(l.i.u))}</div><button class="cl-x" type="button" data-rm>Remove</button></div>`).join("")}
         <div class="totals"><div><span>Materials (${lines.length} line${lines.length > 1 ? "s" : ""})</span><b class="grand">${fmt(sub)}</b></div>
-        <div class="small muted"><span>Delivery to ${esc(stateName())}</span><span>quoted on WhatsApp</span></div></div>
+        <div class="small muted"><span>Delivery to ${esc(stateName())} ${CHG}</span><span>quoted on WhatsApp</span></div></div>
         ${lockable >= CAT.lock.minValue ? `<p class="small"><span class="badge">Price Lock</span> Not buying it all now? <a href="/stockpile/?from=cart#lock">Lock today's price on the ${fmt(lockable)} of eligible items</a> and draw down monthly.</p>` : ""}
       </div>`;
     }
@@ -351,7 +404,7 @@
         return `<article class="bcard" data-bundle="${b.id}">
           <div class="bhead"><div class="bx-head"><span class="mask">**** OFFER ${String(n).padStart(2, "0")}</span><span class="ribbon">↗ Save ${pct(b.discount)}</span></div>
           <h2>${esc(b.name)}</h2><span class="small" style="opacity:.75">${esc(b.for)}</span>
-          <div style="margin-top:8px"><span class="was">${fmt(c.market)}</span><div class="bprice">${fmt(full.total)}</div><span class="small" style="opacity:.75">pay in full · ${esc(stateName())} · held up to ${CAT.holdMonths} months</span></div></div>
+          <div style="margin-top:8px"><span class="was">${fmt(c.market)}</span><div class="bprice">${fmt(full.total)}</div><span class="small" style="opacity:.8">pay in full · ${esc(stateName())} ${CHG} · held up to ${CAT.holdMonths} months</span></div></div>
           <details><summary>[What's in it · ${b.lines.length} item${b.lines.length > 1 ? "s" : ""}]</summary><ul>${b.lines.map(([cd, q]) => `<li>${qfmt(q)} ${esc(uw(BY[cd].u))} — ${esc(BY[cd].d)}</li>`).join("")}</ul></details>
           <div class="plans" role="radiogroup" aria-label="Payment plan">${c.plans.map((p, k) => `<label><input type="radio" name="plan-${b.id}" value="${p.id}"${k ? "" : " checked"}><span><b>${esc(p.label)}: ${p.months > 1 ? fmt(p.up) + " now + " + (p.months - 1) + " × " + fmt(p.monthly) : fmt(p.total)}</b>${esc(p.note)}${p.months > 1 ? " · total " + fmt(p.total) : ""}</span></label>`).join("")}</div>
           <button class="btn btn-primary" type="button" data-reserve>${WA_ICON} [Reserve this offer]</button></article>`;
@@ -423,7 +476,7 @@
       const save = s.mBase - s.locked, saveH = s.mHigh - s.locked;
       const small = s.locked < CAT.lock.minValue;
       out.innerHTML = `<h2>Your Price Lock</h2>
-        <div class="kpi hl"><span class="mask" style="color:inherit">**** **** ${s.months}M LOCK</span><span>Locked value · ${esc(stateName())}</span><b>${fmt(s.locked)}</b><span>today's prices ${fmt(s.now)} + ${pct(s.ten.spread)} lock spread, no fees</span>
+        <div class="kpi hl"><span class="mask" style="color:inherit">**** **** ${s.months}M LOCK</span><span>Locked value · ${esc(stateName())} ${CHG}</span><b>${fmt(s.locked)}</b><span>today's prices ${fmt(s.now)} + ${pct(s.ten.spread)} lock spread, no fees</span>
           <div class="prog" style="color:#fff"><i style="width:${Math.round(s.seg.deposit * 100)}%"></i></div><span>${pct(s.seg.deposit)} deposit activates the lock</span></div>
         <div class="kgrid"><div class="kpi sun"><span>Activation deposit (${pct(s.seg.deposit)})</span><b>${fmt(s.deposit)}</b></div>
         <div class="kpi"><span>Average monthly draw-down</span><b>${fmt(s.monthly)}</b></div></div>
