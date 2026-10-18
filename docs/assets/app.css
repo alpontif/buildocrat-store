@@ -1,7 +1,7 @@
 /* Buildocrat store — sage / mint / teal bento theme. Hand-written; build.py only adds a cache-busting ?v= */
 :root{
-  --bg:#D5DFDB; --bg-2:#C9D5D1; --surface:#FFFFFF; --sunk:#F0F4F2; --ink:#16211E; --muted:#7D8A86; --line:#E2E9E6;
-  --mint:#C7E8A4; --mint-2:#E4F3D3; --mint-ink:#203A12; --teal:#165E57; --teal-d:#0F4842; --teal-2:#22766C; --teal-ink:#E6F3EF;
+  --bg:#D5DFDB; --bg-2:#C9D5D1; --surface:#FFFFFF; --sunk:#F0F4F2; --ink:#000000; --muted:#2F3A36; --line:#E2E9E6;
+  --mint:#C7E8A4; --mint-2:#E4F3D3; --mint-ink:#0B1A05; --teal:#165E57; --teal-d:#0F4842; --teal-2:#22766C; --teal-ink:#FFFFFF;
   --green:var(--teal); --green-d:var(--teal-d); --deep:var(--teal-d); --sun:var(--mint); --sun-soft:var(--mint-2);
   --wa:var(--teal); --bad:#C2483A; --bad-soft:#F8E3E0;
   --r:26px; --r-md:20px; --r-sm:14px; --shadow:0 1px 0 rgba(22,33,30,.04),0 18px 40px -30px rgba(15,72,66,.45);
@@ -9,13 +9,13 @@
   --mono:"DM Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){
-  :root{--bg:#0D1412;--bg-2:#121B18;--surface:#17211E;--sunk:#1D2925;--ink:#E7EFEB;--muted:#8E9F99;--line:#26332F;
+  :root{--bg:#0D1412;--bg-2:#121B18;--surface:#17211E;--sunk:#1D2925;--ink:#FFFFFF;--muted:#D2DDD8;--line:#26332F;
     --mint:#B9DE93;--mint-2:#24331F;--mint-ink:#16260C;--teal:#22766C;--teal-d:#165E57;--teal-2:#2B887C;--bad-soft:#3A1F1C;
     --shadow:0 18px 40px -26px rgba(0,0,0,.8)}
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.55 var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:600 17px/1.55 var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 a{color:var(--teal)}
 @media (prefers-color-scheme:dark){a{color:var(--mint)}}
 h1,h2,h3{font-family:var(--display);line-height:1.12;letter-spacing:-.025em;margin:0 0 .5em;font-weight:600}
@@ -398,3 +398,37 @@ a.bx{padding-bottom:70px}
 .loc-hint::before{content:"";position:absolute;top:-7px;left:var(--ax,70%);width:14px;height:14px;background:var(--surface);transform:rotate(45deg);box-shadow:-1px -1px 0 var(--line)}
 @keyframes hintIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @media (max-width:350px){.loc-txt small{display:none}}
+
+/* ---------- high-legibility pass: bolder, blacker text (18 Oct) ---------- */
+h1,h2,h3,.h3{font-weight:800;letter-spacing:-.02em}
+.lede,.small,.muted,p,li,td,label,summary,span{font-weight:600}
+.lede{color:var(--ink);font-size:1.08rem}
+.muted,.punit,.munit,.small.muted,.jtext,.steps-list li,.rcard p,.qa p,.prow-l .t span,.key,.plans label,.bcard ul,.crumbs,.crumbs a{color:var(--muted);opacity:1}
+.eyebrow,.mask,.pbar .cap,.loc-txt small,.step-n,.crumbs,.gchip span,.gcard span,.foot h2,.more-a,.co-line,.ref,.req b,.tile,.add,.chg,.pill,.ribbon,.bcard details summary,.bcard .btn-primary,.cart-line .cl-x{font-weight:500;color:inherit}
+.eyebrow{color:var(--ink)}
+.pbar .cap,.loc-txt small,.gchip span,.gcard span,.crumbs{color:var(--muted)}
+.mask{opacity:1}
+.big-num,.bprice,.big-price,.kpi b,.totals .grand{font-weight:800}
+.mname,.pname,.mprice,.pprice,.prow-l .t b,.prow-l .amt,.cart-line .cl-n,.cart-line .cl-t,.jtitle,.plans label b,.gcard b,.gchip,.chip,.tabs a,.seg button,.state-btn,.loc-txt span,.btn,.form label,legend{font-weight:800}
+.tabs a{color:var(--ink)}
+.seg button{color:var(--ink)}
+.seg button[aria-selected=true]{color:#fff}
+.trust li{font-weight:700}
+.lbl,.jtext,.bhead .small,.bhead span,.kpi span,.kpi.hl span,.kpi.sun span,.side.card .muted,.bx-teal .muted,.bx-teal .small,.bx-mint .muted,.price-box .muted,.lockband p,.foot-note,.co-line,.was{opacity:1!important}
+.kpi.hl span,.bx-teal .small,.bx-teal .muted,.lockband p{color:#FFFFFF}
+.side.card .muted,.price-box .muted,.bx-mint .muted,.kpi.sun span{color:var(--mint-ink)}
+.bhead [style*="opacity"]{opacity:1!important}
+.was{color:inherit}
+.foot{color:#fff}
+.foot-note{opacity:.95!important}
+input,select,textarea{font-weight:600;color:var(--ink);border-color:#9AA9A3}
+input::placeholder,textarea::placeholder{color:#55625D;opacity:1}
+.qty input{font-weight:500}
+.jcard .jtext{color:inherit}
+.j-risk .jtext,.j-stockpile .jtext{opacity:1}
+.ic{stroke-width:2.1}
+@media (prefers-color-scheme:dark){input,select,textarea{border-color:#4A5A54}input::placeholder{color:#B8C6C0}}
+.bx-teal [style*="opacity"]{opacity:.85!important}
+.mask{font-size:.86rem}.eyebrow{font-size:.82rem}.pbar .cap{font-size:.7rem}.loc-txt small{font-size:.66rem}
+.tile{font-size:.98rem}.add,.chg{font-size:.8rem}.bcard details summary,.more-a,.step-n{font-size:.86rem}
+.crumbs{font-size:.84rem}.pill,.ribbon{font-size:.82rem}
