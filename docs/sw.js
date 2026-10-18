@@ -1,7 +1,7 @@
-// Buildocrat service worker, edition 2af76fd512
-const V = "bdc-2af76fd512";
+// Buildocrat service worker, edition d357d7e5e7
+const V = "bdc-d357d7e5e7";
 const SHELL = ["/", "/buy/", "/stockpile/", "/sell/", "/source/", "/risk-control/", "/help/", "/requests/", "/materials/", "/offline.html",
-  "/assets/app.css?v=2af76fd512", "/assets/app.js?v=2af76fd512", "/assets/pwa.js?v=2af76fd512", "/data/catalog.json?v=2af76fd512", "/icons/icon-192.png", "/manifest.webmanifest"];
+  "/assets/app.css?v=d357d7e5e7", "/assets/app.js?v=d357d7e5e7", "/assets/pwa.js?v=d357d7e5e7", "/data/catalog.json?v=d357d7e5e7", "/icons/icon-192.png", "/manifest.webmanifest"];
 self.addEventListener("install", ev => { ev.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", ev => { ev.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("message", ev => {

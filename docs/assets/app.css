@@ -3,7 +3,7 @@
   --bg:#D5DFDB; --bg-2:#C9D5D1; --surface:#FFFFFF; --sunk:#F0F4F2; --ink:#000000; --muted:#2F3A36; --line:#E2E9E6;
   --mint:#C7E8A4; --mint-2:#E4F3D3; --mint-ink:#0B1A05; --teal:#165E57; --teal-d:#0F4842; --teal-2:#22766C; --teal-ink:#FFFFFF;
   --green:var(--teal); --green-d:var(--teal-d); --deep:var(--teal-d); --sun:var(--mint); --sun-soft:var(--mint-2);
-  --wa:var(--teal); --bad:#C2483A; --bad-soft:#F8E3E0;
+  --wa:var(--teal); --bad:#A3321F; --bad-soft:#F8E3E0;
   --r:26px; --r-md:20px; --r-sm:14px; --shadow:0 1px 0 rgba(22,33,30,.04),0 18px 40px -30px rgba(15,72,66,.45);
   --display:"Manrope","Helvetica Neue",Arial,sans-serif; --body:"Manrope","Helvetica Neue",Arial,sans-serif;
   --mono:"DM Mono",ui-monospace,Menlo,monospace;
@@ -404,7 +404,7 @@ h1,h2,h3,.h3{font-weight:800;letter-spacing:-.02em}
 .lede,.small,.muted,p,li,td,label,summary,span{font-weight:600}
 .lede{color:var(--ink);font-size:1.08rem}
 .muted,.punit,.munit,.small.muted,.jtext,.steps-list li,.rcard p,.qa p,.prow-l .t span,.key,.plans label,.bcard ul,.crumbs,.crumbs a{color:var(--muted);opacity:1}
-.eyebrow,.mask,.pbar .cap,.loc-txt small,.step-n,.crumbs,.gchip span,.gcard span,.foot h2,.more-a,.co-line,.ref,.req b,.tile,.add,.chg,.pill,.ribbon,.bcard details summary,.bcard .btn-primary,.cart-line .cl-x{font-weight:500;color:inherit}
+.eyebrow,.mask,.pbar .cap,.loc-txt small,.step-n,.crumbs,.gchip span,.gcard span,.foot h2,.more-a,.co-line,.ref,.req b,.tile,.add,.chg,.pill,.ribbon,.bcard details summary,.bcard .btn-primary,.cart-line .cl-x{font-weight:500}
 .eyebrow{color:var(--ink)}
 .pbar .cap,.loc-txt small,.gchip span,.gcard span,.crumbs{color:var(--muted)}
 .mask{opacity:1}
@@ -432,3 +432,14 @@ input::placeholder,textarea::placeholder{color:#55625D;opacity:1}
 .mask{font-size:.86rem}.eyebrow{font-size:.82rem}.pbar .cap{font-size:.7rem}.loc-txt small{font-size:.66rem}
 .tile{font-size:.98rem}.add,.chg{font-size:.8rem}.bcard details summary,.more-a,.step-n{font-size:.86rem}
 .crumbs{font-size:.84rem}.pill,.ribbon{font-size:.82rem}
+
+/* label colours restated after the legibility pass */
+.tile-mint{color:var(--mint-ink)}.tile-teal{color:#fff}.tile-white{color:var(--ink)}
+.add{color:var(--mint-ink)}.add.in{color:#fff}
+.chg{color:var(--mint-ink)}.chg:hover{color:#fff}
+.bcard:nth-child(3n+2) .bhead .chg,.kpi.hl .chg{color:#fff}
+.ref{color:var(--mint-ink)}
+.foot h2{color:var(--mint)}
+.cart-line .cl-x{color:var(--bad)}
+.bcard details summary{color:var(--teal)}
+.more-a,.step-n{color:var(--teal)}
