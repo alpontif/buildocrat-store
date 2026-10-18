@@ -35,6 +35,7 @@ p{margin:0 0 .8em}
 .install-btn[hidden]{display:none}
 @media (max-width:420px){.install-btn span{display:none}.brand-word{font-size:1.05rem}}
 .state-btn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[hidden]{display:none!important}
 .cart-count{position:absolute;top:-6px;right:-6px;background:var(--sun);color:#1b1400;border-radius:999px;min-width:20px;height:20px;font-size:.75rem;font-weight:800;display:grid;place-items:center;padding:0 5px}
 .tabs{background:var(--deep-2);overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
