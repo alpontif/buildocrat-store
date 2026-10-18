@@ -1,7 +1,7 @@
 {
   "_readme": "Business settings for buildocrat.store. Edit numbers here, then run python3 pipeline/build.py (or let the weekly Action do it). Percentages are decimals: 0.05 = 5%.",
 
-  "site": "https://www.buildocrat.store",
+  "site": "https://buildocrat.store",
   "brand": "Buildocrat",
   "legalName": "Buildocrat Property Technologies Ltd",
   "whatsapp": "2347018024292",

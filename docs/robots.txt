@@ -82,4 +82,4 @@ User-agent: *
 Allow: /
 Disallow: /requests/
 
-Sitemap: https://www.buildocrat.store/sitemap.xml
+Sitemap: https://buildocrat.store/sitemap.xml

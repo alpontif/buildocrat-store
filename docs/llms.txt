@@ -5,25 +5,25 @@
 Prices updated: 2026-10-15. 777 material lines.
 
 ## Key prices (Abuja, before delivery)
-- Dangote 3X 42.5R, 50kg: ₦13,100 per bag (https://www.buildocrat.store/materials/cement/m-cem-07-dangote-3x-42-5r-50kg/)
-- BUA 42.5, 50kg: ₦12,800 per bag (https://www.buildocrat.store/materials/cement/m-cem-08-bua-42-5-50kg/)
-- Sharp sand, 20t tipper load: ₦136,500 per load (https://www.buildocrat.store/materials/aggregates/m-agg-01-sharp-sand-20t-tipper-load/)
-- Granite 3/4", 30t load: ₦567,000 per load (https://www.buildocrat.store/materials/aggregates/m-agg-07-granite-3-4-inch-30t-load/)
-- 9" (225mm) hollow sandcrete block: ₦890 per each (https://www.buildocrat.store/materials/blocks-bricks-precast/m-blk-01-9-inch-225mm-hollow-sandcrete-block/)
-- High-yield rebar 12-16mm: ₦1,102,000 per tonne (https://www.buildocrat.store/materials/reinforcement-steel/m-stl-01-high-yield-rebar-12-16mm/)
-- 12mm rebar, 12m length (0.888 kg/m): ₦11,750 per length (https://www.buildocrat.store/materials/reinforcement-steel/m-stl-12-12mm-rebar-12m-length-0-888-kg-m/)
-- Aluminium longspan 0.55mm, Grade A (market): ₦8,500 per m² (https://www.buildocrat.store/materials/roofing/m-rf-01-aluminium-longspan-0-55mm-grade-a-market/)
+- Dangote 3X 42.5R, 50kg: ₦13,100 per bag (https://buildocrat.store/materials/cement/m-cem-07-dangote-3x-42-5r-50kg/)
+- BUA 42.5, 50kg: ₦12,800 per bag (https://buildocrat.store/materials/cement/m-cem-08-bua-42-5-50kg/)
+- Sharp sand, 20t tipper load: ₦136,500 per load (https://buildocrat.store/materials/aggregates/m-agg-01-sharp-sand-20t-tipper-load/)
+- Granite 3/4", 30t load: ₦567,000 per load (https://buildocrat.store/materials/aggregates/m-agg-07-granite-3-4-inch-30t-load/)
+- 9" (225mm) hollow sandcrete block: ₦890 per each (https://buildocrat.store/materials/blocks-bricks-precast/m-blk-01-9-inch-225mm-hollow-sandcrete-block/)
+- High-yield rebar 12-16mm: ₦1,102,000 per tonne (https://buildocrat.store/materials/reinforcement-steel/m-stl-01-high-yield-rebar-12-16mm/)
+- 12mm rebar, 12m length (0.888 kg/m): ₦11,750 per length (https://buildocrat.store/materials/reinforcement-steel/m-stl-12-12mm-rebar-12m-length-0-888-kg-m/)
+- Aluminium longspan 0.55mm, Grade A (market): ₦8,500 per m² (https://buildocrat.store/materials/roofing/m-rf-01-aluminium-longspan-0-55mm-grade-a-market/)
 
 ## Services
-- [Buy](https://www.buildocrat.store/buy/): cart of materials, sent to WhatsApp for confirmation and invoice.
-- [Stockpile](https://www.buildocrat.store/stockpile/): bundle offers (pay in full discount or 3/6-month plans, held for call-off) and Price Lock (fix prices 3–12 months; activation deposit; zero fees, spread only).
-- [Sell](https://www.buildocrat.store/sell/): manufacturers, dealers, quarries and individuals list materials.
-- [Source](https://www.buildocrat.store/source/): send a list or BoQ for quotes, including imported and bulk items.
-- [Risk control](https://www.buildocrat.store/risk-control/): estimate material price exposure and request a risk plan.
-- [All materials](https://www.buildocrat.store/materials/)
-- [How it works & FAQ](https://www.buildocrat.store/help/)
+- [Buy](https://buildocrat.store/buy/): cart of materials, sent to WhatsApp for confirmation and invoice.
+- [Stockpile](https://buildocrat.store/stockpile/): bundle offers (pay in full discount or 3/6-month plans, held for call-off) and Price Lock (fix prices 3–12 months; activation deposit; zero fees, spread only).
+- [Sell](https://buildocrat.store/sell/): manufacturers, dealers, quarries and individuals list materials.
+- [Source](https://buildocrat.store/source/): send a list or BoQ for quotes, including imported and bulk items.
+- [Risk control](https://buildocrat.store/risk-control/): estimate material price exposure and request a risk plan.
+- [All materials](https://buildocrat.store/materials/)
+- [How it works & FAQ](https://buildocrat.store/help/)
 
 ## Data
-- [Full price list for AI assistants](https://www.buildocrat.store/llms-full.txt)
-- [All prices, CSV](https://www.buildocrat.store/data/prices.csv) and [JSON](https://www.buildocrat.store/data/prices.json) (CC BY 4.0)
-- [Weekly price changes, RSS](https://www.buildocrat.store/feed.xml)
+- [Full price list for AI assistants](https://buildocrat.store/llms-full.txt)
+- [All prices, CSV](https://buildocrat.store/data/prices.csv) and [JSON](https://buildocrat.store/data/prices.json) (CC BY 4.0)
+- [Weekly price changes, RSS](https://buildocrat.store/feed.xml)

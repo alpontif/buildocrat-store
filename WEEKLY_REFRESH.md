@@ -1,6 +1,6 @@
 # Weekly refresh — buildocrat.store
 
-Buildocrat's materials web app at https://www.buildocrat.store, owned by Engr. Akolade Maruf Ibrahim (Kola), Abuja. Repo alpontif/buildocrat-store is the source of truth; GitHub Pages serves `/docs`.
+Buildocrat's materials web app at https://buildocrat.store, owned by Engr. Akolade Maruf Ibrahim (Kola), Abuja. Repo alpontif/buildocrat-store is the source of truth; GitHub Pages serves `/docs`.
 
 ## Normal week (automatic)
 The GitHub Action **Refresh prices from the Rate Book** runs Monday 16:37 Nigeria time, with catch-up runs Wednesday and Friday. It:
@@ -23,5 +23,5 @@ Use this if the Action fails or Kola asks for a manual refresh.
 
 ## Rules
 - Never hand-edit prices in this repo: they come only from the Rate Book. Business numbers (margin, bundles, plans, Price Lock, risk defaults) live in `store-config.json`; search-console and analytics IDs in `site-config.json`.
-- `docs/CNAME` must stay `www.buildocrat.store` (the build writes it from `store-config.json` → `site`).
+- `docs/CNAME` must stay `buildocrat.store` (the build writes it from `store-config.json` → `site`).
 - Don't edit generated pages; edit `pipeline/build.py` or `docs/assets/*` and rebuild.

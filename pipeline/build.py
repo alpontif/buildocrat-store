@@ -946,7 +946,7 @@ def write_extras(cat, d, ver):
     w.writeheader(); w.writerows(rows)
     write("data/prices.csv", buf.getvalue())
     write("data/prices.json", json.dumps({
-        "source": "Buildocrat (www.buildocrat.store), built from the Nigeria Construction Rate Book",
+        "source": "Buildocrat (buildocrat.store), built from the Nigeria Construction Rate Book",
         "licence": "CC BY 4.0, credit Buildocrat", "updated": cat["updated"], "currency": "NGN",
         "basis": f"Buildocrat selling price, Abuja, before delivery (rate book market price + {round(CFG['buyMargin'] * 100)}% margin)",
         "state_factors": {s_["n"]: s_["f"] for s_ in cat["states"]}, "items": rows}, ensure_ascii=False, indent=1))

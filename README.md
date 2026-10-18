@@ -23,7 +23,7 @@ Visitors' sent requests are kept on their device at `/requests/` so they can reo
 | `pipeline/build.py` | Builds everything in `docs/` from the Rate Book data and the config. |
 | `pipeline/rate-data.json` | Copy of the Rate Book's data used for the last build. |
 | `docs/assets/app.css`, `app.js`, `pwa.js` | Hand-written front end and install-as-app script (never generated). |
-| `docs/` | The published site (GitHub Pages, custom domain `www.buildocrat.store`). |
+| `docs/` | The published site (GitHub Pages, custom domain `buildocrat.store`). |
 | `.github/workflows/refresh.yml` | Mondays 16:37 Nigeria time (+ Wed/Fri catch-up): fetch the Rate Book's latest `rate-data.json`, rebuild, sanity-check, commit, ping IndexNow. |
 
 ## Prices

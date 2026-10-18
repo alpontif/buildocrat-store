@@ -96,12 +96,12 @@ html.pwa-on .wa-float{bottom:calc(var(--pwa-h,0px) + 28px)!important;transition:
   function help() {
     style();
     let steps;
-    if (inApp) steps = [`Tap ${DOTS} or the ••• menu in this app and choose <b>Open in browser</b> (Chrome or Safari).`, 'Then tap <b>Install app</b> on www.buildocrat.store again.'];
+    if (inApp) steps = [`Tap ${DOTS} or the ••• menu in this app and choose <b>Open in browser</b> (Chrome or Safari).`, 'Then tap <b>Install app</b> on buildocrat.store again.'];
     else if (ios) steps = [`Tap the <b>Share</b> button ${SHARE} in Safari’s toolbar.`, 'Scroll down and tap <b>Add to Home Screen</b>.', 'Tap <b>Add</b>. “Buildocrat” appears on your home screen.'];
     else if (/android/i.test(ua)) steps = [`Tap the browser menu ${DOTS} at the top right.`, 'Tap <b>Install app</b> or <b>Add to Home screen</b>.', 'Confirm. “Buildocrat” appears with your apps.'];
     else steps = ['In Chrome or Edge, click the install icon at the right end of the address bar, or open the browser menu.', 'Choose <b>Install Buildocrat</b> (Chrome: Cast, save and share › Install page as app).', 'It opens in its own window and appears with your apps.'];
     const d = document.createElement('dialog'); d.className = 'pwa-sheet'; d.setAttribute('aria-labelledby', 'pwaT');
-    d.innerHTML = `<div class="hd"><img src="/icons/icon-192.png" alt=""><div><h2 id="pwaT">Install Buildocrat</h2><p>www.buildocrat.store as an app</p></div></div>
+    d.innerHTML = `<div class="hd"><img src="/icons/icon-192.png" alt=""><div><h2 id="pwaT">Install Buildocrat</h2><p>buildocrat.store as an app</p></div></div>
       <ol>${steps.map(s => `<li><span>${s}</span></li>`).join('')}</ol>
       <p class="why">Opens full screen from your home screen, starts faster, keeps your cart, and shows this week’s prices even with poor network on site.</p>
       <div class="ft"><button type="button" autofocus>Got it</button></div>`;
