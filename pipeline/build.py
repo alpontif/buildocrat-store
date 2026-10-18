@@ -18,6 +18,7 @@ import os
 import re
 import shutil
 import sys
+import urllib.parse
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -250,9 +251,32 @@ ICON = {
     "menu": '<path d="M4 7h16M4 12h16M4 17h16"/>',
     "pin": '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/>',
     "clock": '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    "arrow-ur": '<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
+    "bag": '<path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/>',
+    "rebar": '<path d="M5 19 19 5M9 21 21 9M3 15 15 3"/>',
+    "brick": '<rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M3 12h18M9 6v6M15 12v6"/>',
+    "heap": '<path d="M3 19h18l-6-10-3 4-2-3-7 9Z"/>',
+    "roof": '<path d="M3 11 12 4l9 7"/><path d="M6 10v9h12v-9"/>',
+    "plank": '<rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 12h6"/>',
+    "box": '<path d="M4 8l8-4 8 4v8l-8 4-8-4V8Z"/><path d="m4 8 8 4 8-4M12 12v8"/>',
+    "tap": '<path d="M5 9h8a3 3 0 0 1 3 3v2"/><path d="M9 6v3M5 6h8M16 17v2"/>',
+    "bolt": '<path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z"/>',
+    "paint": '<rect x="4" y="4" width="13" height="6" rx="1.5"/><path d="M17 7h3v5h-8v3"/><path d="M12 15v5"/>',
+    "tile": '<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4v16M4 12h16"/>',
+    "door": '<rect x="6" y="3" width="12" height="18" rx="1"/><path d="M14 12h.01"/>',
+    "drop": '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/>',
     "download": '<path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>',
     "list": '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
 }
+
+
+GROUP_ICON = {"cement": "bag", "reinforcement-steel": "rebar", "blocks-bricks-precast": "brick", "aggregates": "heap",
+              "roofing": "roof", "timber": "plank", "concrete": "box", "waterproofing": "drop", "doors-windows": "door",
+              "plumbing": "tap", "tiles-floor-finishes": "tile", "paint": "paint", "ceilings-glass": "tile",
+              "architectural-finishes": "tile", "electrical": "bolt", "hvac-ict": "bolt", "fire-protection": "drop",
+              "tools": "box", "safety-ppe": "shield", "site-water": "drop", "roads": "heap", "water-supply-sewerage": "tap",
+              "geosynthetics": "tile", "piling": "rebar", "power": "bolt", "bridges": "rebar", "marine": "drop",
+              "railways": "rebar", "industrial": "roof", "oil-gas": "tap"}
 
 
 def icon(name, cls="ic"):
@@ -313,7 +337,8 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{canon}">
 {'<meta name="robots" content="noindex">' if noindex else ''}
-<meta name="theme-color" content="#0B3D2A">
+<meta name="theme-color" content="#D5DFDB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1412" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Buildocrat">
 <meta property="og:title" content="{e(title)}">
@@ -327,7 +352,7 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/app.css?v={ver}">
 {ld_html}
 {analytics}
@@ -336,7 +361,7 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="wrap top-row">
-    <a class="brand" href="/" aria-label="Buildocrat home"><span class="brand-mark">B</span><span class="brand-word">Buildocrat</span></a>
+    <a class="brand" href="/" aria-label="Buildocrat home"><span class="brand-mark"><svg viewBox="0 0 40 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#165E57"/><circle cx="27" cy="13" r="12" fill="#C7E8A4" fill-opacity=".92"/></svg></span><span class="brand-word">Buildocrat</span></a>
     <button class="state-btn" type="button" data-state-btn aria-label="Choose your delivery state">{icon("pin")}<span data-state-label>FCT (Abuja)</span></button>
     <button class="state-btn install-btn" type="button" data-install hidden aria-label="Install the Buildocrat app">{icon("download")}<span>Install</span></button>
     <a class="cart-btn" href="/buy/#cart" aria-label="Your cart">{icon("cart")}<span class="cart-count" data-cart-count hidden>0</span></a>
@@ -350,15 +375,15 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 <footer class="foot">
   <div class="wrap foot-grid">
     <div>
-      <a class="brand brand-foot" href="/"><span class="brand-mark">B</span><span class="brand-word">Buildocrat</span></a>
+      <a class="brand brand-foot" href="/"><span class="brand-mark"><svg viewBox="0 0 40 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#165E57"/><circle cx="27" cy="13" r="12" fill="#C7E8A4" fill-opacity=".92"/></svg></span><span class="brand-word">Buildocrat</span></a>
       <p>Buy, stockpile, sell and source building materials across Nigeria, with your price locked when it matters.</p>
-      <p class="small">{e(CFG["legalName"])} · {e(CFG["address"])}</p>
+      <p class="co-line">{e(CFG["legalName"])}<br>CAC RC {CFG["rc"]}<br>{e(CFG["address"])}</p>
     </div>
     <div>
       <h2>Talk to us</h2>
       <p><a href="https://wa.me/{CFG["whatsapp"]}" rel="noopener">{WA_SVG} WhatsApp {e(CFG["whatsappDisplay"])}</a></p>
       <p><a href="mailto:{CFG["email"]}">{e(CFG["email"])}</a></p>
-      <p class="small">We will only ever ask you to pay into a <strong>Buildocrat company account</strong>, shared in the chat from this number. Never pay a personal account.</p>
+      <p class="small">We only take payment into an account in the name of <strong>{e(CFG["legalName"])} (RC {CFG["rc"]})</strong>, shared in the chat from this number. Never pay a personal account.</p>
     </div>
     <div>
       <h2>Explore</h2>
@@ -385,78 +410,138 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
 
 # ----------------------------------------------------------------- pages ---
 def item_row(i):
-    return (f'<li class="mrow" data-code="{i["c"]}"><a href="{i["s"]}"><span class="mname">{e(i["d"])}</span>'
+    return (f'<li class="mrow" data-code="{i["c"]}"><span class="mi">{icon(GROUP_ICON.get(i["g"], "box"))}</span><a href="{i["s"]}"><span class="mname">{e(i["d"])}</span>'
             f'<span class="munit">per {e(unit_word(i["u"]))}</span></a>'
             f'<span class="mprice" data-price="{i["c"]}">{naira(i["p"])}</span></li>')
 
 
+def bar_html(i):
+    lo, hi, p = i["lo"], i["hi"], i["p"]
+    mn, mx = lo * 0.82, hi * 1.06
+    f = lambda v: max(0, min(100, (v - mn) / (mx - mn) * 100))
+    cap = BAR_CAP.get(i["c"], i["c"][2:5])
+    return (f'<a class="pbar" href="{i["s"]}" title="{e(i["d"])}: {naira(lo)} – {naira(hi)}, today {naira(p)}">'
+            f'<span class="rail"><span class="rng" style="bottom:0;height:{f(hi):.0f}%"></span>'
+            f'<span class="now" style="height:{f(p):.0f}%"></span></span><span class="cap">{cap}</span></a>')
+
+
+BAR_CAP = {"M-CEM-07": "CEM", "M-CEM-08": "BUA", "M-STL-01": "ROD", "M-BLK-01": "BLK", "M-AGG-01": "SND",
+           "M-RF-01": "RF", "M-AGG-07": "GRN", "M-STL-12": "12MM"}
+
+
+def coin(variant="teal"):
+    a, b = ("#165E57", "#C7E8A4") if variant == "teal" else ("#C7E8A4", "#FFFFFF")
+    return (f'<svg class="coin" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="18" fill="{a}"/>'
+            f'<path d="M10 22c3-7 15-9 18-4M10 16c3 5 14 6 18-1" stroke="{b}" stroke-width="3" fill="none" stroke-linecap="round"/></svg>')
+
+
 def page_home(cat, ver):
     by = {i["c"]: i for i in cat["items"]}
+    hero = by["M-CEM-07"]
+    ch = (hero["p"] - hero["pr"]) / hero["pr"] if hero.get("pr") else 0
+    pill = (f'<span class="pill">{"↗" if ch > 0 else "↘"} {abs(ch) * 100:.1f}%</span>' if ch else '<span class="pill">steady</span>')
+    rows = "".join(
+        f'<a class="prow-l" href="{by[c]["s"]}">{icon(GROUP_ICON.get(by[c]["g"], "box"))}<span class="t"><b>{e(short_name(by[c]))}</b>'
+        f'<span>per {e(unit_word(by[c]["u"]))} · checked {fdate(by[c]["set"] or cat["updated"])}</span></span>'
+        f'<span class="amt" data-price="{c}">{naira(by[c]["p"])}</span></a>' for c in ["M-STL-01", "M-BLK-01", "M-AGG-01", "M-RF-01"] if c in by)
+    bars = "".join(bar_html(by[c]) for c in cat["watch"])
+    trailer = next((b for b in cat["bundles"] if b["id"] == "cement-trailer"), cat["bundles"][0])
+    tm = sum(by[c]["p"] * q for c, q in trailer["lines"])
+    lockv, lockd = 12000000, 0.10
     cards = "".join(
         f'<a class="jcard j-{k}" href="{h}"><span class="jicon">{icon(ic)}</span><span class="jtitle">{lab}</span>'
-        f'<span class="jtext">{t}</span><span class="jgo">{icon("arrow")}</span></a>' for k, h, lab, ic, t in JOURNEYS)
-    watch = "".join(
-        f'<a class="tick" href="{by[c]["s"]}"><span class="tick-n">{e(short_name(by[c]))}</span>'
-        f'<span class="tick-p" data-price="{c}">{naira(by[c]["p"])}</span><span class="tick-u">per {e(unit_word(by[c]["u"]))}</span>'
-        f'<span class="tick-ch" data-change="{c}"></span></a>' for c in cat["watch"])
+        f'<span class="jtext">{t}</span><span class="jgo">{icon("arrow-ur")}</span></a>' for k, h, lab, ic, t in JOURNEYS)
     groups = "".join(
-        f'<a class="gchip" href="/materials/{g["s"]}/">{e(g["n"])} <span>{g["count"]}</span></a>'
+        f'<a class="gchip" href="/materials/{g["s"]}/">{icon(GROUP_ICON.get(g["s"], "box"))}{e(g["n"])} <span>{g["count"]}</span></a>'
         for g in cat["groups"] if g["sec"] == "building")
     body = f"""
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <p class="eyebrow">Nigeria's price-certain materials desk</p>
-      <h1>Buy, stockpile, sell and source building materials. <em>Lock the price.</em></h1>
-      <p class="lede">Pick what you need, see a checked price for your state, and finish on WhatsApp with a real person. You pay only after we confirm stock, delivery and the final invoice.</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="/buy/">{icon("cart")} Shop materials</a>
-        <a class="btn btn-ghost" href="/stockpile/">{icon("lock")} See stockpile offers</a>
-      </div>
-      <ul class="trust">
-        <li>{icon("check")} Prices from the weekly <a href="{CFG["rateBookUrl"]}">Construction Rate Book</a></li>
-        <li>{icon("check")} Delivery to all 36 states + FCT</li>
-        <li>{icon("check")} Pay only into a Buildocrat company account</li>
-      </ul>
+<section class="wrap bento">
+  <div class="bx hero-card s7">
+    <p class="eyebrow">Nigeria's price-certain materials desk</p>
+    <h1>Buy, stockpile, sell and source building materials. <em>Lock the price.</em></h1>
+    <p class="lede">Pick what you need, see a checked price for your state, and finish on WhatsApp with a real person. You pay only after we confirm stock, delivery and the final invoice.</p>
+    <div class="tiles">
+      <a class="tile tile-mint" href="/buy/"><span class="tl">Shop materials</span><span class="tile-ic">{icon("cart")}</span></a>
+      <a class="tile tile-teal" href="/stockpile/#lock"><span class="tl">Lock a price</span><span class="tile-ic">{icon("lock")}</span></a>
     </div>
-    <div class="ticker-card">
-      <div class="ticker-head"><span>Today's prices · <b data-state-label>FCT (Abuja)</b></span><span class="small">Updated {fdate(cat["updated"])}</span></div>
-      <div class="ticker">{watch}</div>
-      <a class="ticker-more" href="/materials/">All {len(cat["items"])} materials {icon("arrow")}</a>
+    <ul class="trust">
+      <li>{icon("check")} Weekly <a href="{CFG["rateBookUrl"]}">Rate Book</a> prices</li>
+      <li>{icon("check")} All 36 states + FCT</li>
+      <li>{icon("check")} RC {CFG["rc"]}</li>
+    </ul>
+  </div>
+  <div class="bx pcard s5">
+    <div class="pcard-top">
+      <div class="bx-head"><span class="mask">**** RC {CFG["rc"]}</span>{coin()}</div>
+      <span class="lbl">{e(short_name(hero))} · <b data-state-label>FCT (Abuja)</b></span>
+      <div class="bx-head" style="align-items:flex-end;margin:0"><div class="big-num" data-price="{hero["c"]}">{naira(hero["p"])}</div>{pill}</div>
+    </div>
+    <div class="pcard-list">{rows}</div>
+    <a class="more-a" href="/materials/">All {len(cat["items"])} materials {icon("arrow")}</a>
+  </div>
+  <div class="bx s5">
+    <div class="stats">
+      <div>
+        <h2>This week's prices</h2>
+        <div class="keys">
+          <span class="key"><span><i style="background:var(--teal)"></i>Today</span><b>Updated {fdate(cat["updated"])}</b></span>
+          <span class="key"><span><i style="background:var(--mint)"></i>Market range</span><b>Low to high</b></span>
+        </div>
+      </div>
+      <div class="bars" role="img" aria-label="Today's price against this week's market range for key materials">{bars}</div>
     </div>
   </div>
+  <a class="bx bx-teal s4" href="/stockpile/#lock">
+    <div class="bx-head"><span class="mask">**** PRICE LOCK</span>{coin("mint")}</div>
+    <div class="big-num" style="font-size:2rem">{naira(lockv * lockd)} <span style="opacity:.55">/ {naira(lockv)}</span></div>
+    <span class="lbl">Activation deposit on a ₦12m lock</span>
+    <div class="prog"><i style="width:{lockd * 100:.0f}%"></i></div>
+    <span class="small">{lockd * 100:.0f}% secures today's price for up to 12 months</span>
+    <span class="go-sq">{icon("arrow-ur")}</span>
+  </a>
+  <a class="bx s3" href="/stockpile/">
+    <span class="small muted">Stockpile offer</span>
+    <div class="big-num" style="font-size:1.9rem;color:var(--teal)" >{naira(tm * (1 - trailer["discount"]))}</div>
+    <b style="font-weight:600">{e(trailer["name"])}</b>
+    <p class="small muted" style="margin:2px 0 46px">Save {trailer["discount"] * 100:.0f}% · held {CFG["bundles"]["holdMonths"]} months</p>
+    <span class="go-sq">{icon("arrow-ur")}</span>
+  </a>
 </section>
 <section class="wrap block">
   <h2 class="sec-title">What do you want to do?</h2>
   <div class="jgrid">{cards}</div>
 </section>
-<section class="band">
-  <div class="wrap steps">
-    <h2 class="sec-title">How every deal works</h2>
-    <ol class="steps-list">
-      <li><b>1. Choose online.</b> Add materials to your cart, pick a stockpile offer, list what you sell, or send a sourcing request.</li>
-      <li><b>2. Finish on WhatsApp.</b> Your request opens in a chat with Buildocrat, already filled in with a reference number.</li>
-      <li><b>3. Confirm and pay.</b> We confirm stock, delivery cost and dates in writing, then send an invoice for a Buildocrat company account.</li>
-      <li><b>4. Delivered or held.</b> We deliver to site, or hold your stockpile and deliver whenever you call it off.</li>
-    </ol>
-  </div>
+<section class="wrap block">
+  <h2 class="sec-title">How every deal works</h2>
+  <ol class="steps-list">
+    <li><span class="step-n">[01]</span><b>Choose online</b>Add materials to your cart, pick a stockpile offer, list what you sell, or send a sourcing request.</li>
+    <li><span class="step-n">[02]</span><b>Finish on WhatsApp</b>Your request opens in a chat with Buildocrat, already filled in with a reference number.</li>
+    <li><span class="step-n">[03]</span><b>Confirm and pay</b>We confirm stock, delivery and dates in writing, then invoice from {e(CFG["legalName"])}.</li>
+    <li><span class="step-n">[04]</span><b>Delivered or held</b>We deliver to site, or hold your stockpile and deliver whenever you call it off.</li>
+  </ol>
 </section>
 <section class="wrap block">
   <h2 class="sec-title">Shop by material</h2>
   <div class="gchips">{groups}</div>
   <p class="more-link"><a href="/materials/">Infrastructure, power, water and oil &amp; gas materials {icon("arrow")}</a></p>
 </section>
-<section class="wrap block lockband">
-  <div>
-    <p class="eyebrow">Price Lock</p>
-    <h2>Building over 6–12 months? Freeze today's cement, iron rod, block and roofing prices.</h2>
-    <p>Pay an activation deposit, draw your materials month by month at the locked price, with no fees. If prices rise, the rise is ours, not yours.</p>
+<section class="wrap">
+  <div class="lockband">
+    <div>
+      <p class="eyebrow">Price Lock</p>
+      <h2>Building over 6–12 months? Freeze today's cement, iron rod, block and roofing prices.</h2>
+      <p>Pay an activation deposit, draw your materials month by month at the locked price, with no fees. If prices rise, the rise is ours, not yours.</p>
+    </div>
+    <div class="tiles" style="grid-template-columns:1fr">
+      <a class="tile tile-mint" href="/stockpile/#lock"><span class="tl">Work out my lock</span><span class="tile-ic">{icon("lock")}</span></a>
+      <a class="tile tile-white" href="https://wa.me/{CFG["whatsapp"]}?text={urllib.parse.quote("Hello Buildocrat, I'd like to talk about Price Lock.")}" rel="noopener"><span class="tl">Ask on WhatsApp</span><span class="tile-ic">{icon("chat")}</span></a>
+    </div>
   </div>
-  <a class="btn btn-primary" href="/stockpile/#lock">{icon("lock")} Work out my locked price</a>
 </section>
 """
     ld = [
         {"@context": "https://schema.org", "@type": "Organization", "name": "Buildocrat", "legalName": CFG["legalName"],
+         "identifier": {"@type": "PropertyValue", "propertyID": "CAC RC", "value": CFG["rc"]},
          "url": SITE, "logo": SITE + "/icons/icon-512.png", "email": CFG["email"],
          "telephone": "+" + CFG["whatsapp"],
          "address": {"@type": "PostalAddress", "streetAddress": "No 30 Anthony Enahoro Street", "addressLocality": "Utako, Abuja",
@@ -739,14 +824,14 @@ def page_requests(ver):
 
 
 FAQ = [
-    ("How do I pay?", "After you send your order, a Buildocrat person confirms stock, delivery cost and dates in the WhatsApp chat and sends an invoice. You pay by bank transfer into a Buildocrat Property Technologies Ltd company account named on the invoice. We never ask you to pay into a personal account."),
+    ("How do I pay?", "After you send your order, a Buildocrat person confirms stock, delivery cost and dates in the WhatsApp chat and sends an invoice. You pay by bank transfer into a Buildocrat Property Technologies Ltd company account (CAC RC 7019619) named on the invoice. We never ask you to pay into a personal account."),
     ("Are the prices on the site final?", "They are our current selling prices for your state, built from the weekly Nigeria Construction Rate Book plus our margin. Delivery is added per order, and we confirm the final price in writing before you pay. Prices can move during the week; the invoice price is the one you pay."),
     ("Do you deliver outside Abuja?", "Yes, to all 36 states and the FCT. Prices on the site adjust to your state; delivery is quoted separately because it depends on distance, access and load size."),
     ("What is Price Lock?", "Price Lock fixes today's price on cement, iron rods, blocks, sand, granite and roofing for 3 to 12 months. You pay an activation deposit, then pay for each draw-down at the locked price. There are no fees: the locked price includes a fixed spread, which is all we earn."),
     ("What is a stockpile offer?", "A ready-made bundle (for example a foundation pack or a trailer of cement) at a discount if you pay in full, or on a 3 or 6-month plan at a fixed price. We hold the materials and deliver whenever you call them off within the hold period."),
     ("How do I sell materials through Buildocrat?", "Fill in the Sell form with your business and products. It opens in WhatsApp; send photos, price lists or certificates in the chat. We check every supplier before offering their stock to buyers."),
     ("Can you source items you don't list?", "Yes. Use the Source form or send your BoQ in WhatsApp. We find suppliers, compare them and quote delivered to your site."),
-    ("Who is behind Buildocrat?", f"{CFG['legalName']}, Abuja, which also publishes the free Nigeria Construction Rate Book and Nigeria Land Value Book."),
+    ("Who is behind Buildocrat?", f"{CFG['legalName']} (CAC RC {CFG['rc']}), Abuja, which also publishes the free Nigeria Construction Rate Book and Nigeria Land Value Book."),
 ]
 
 
@@ -762,10 +847,22 @@ def page_help(ver):
     <h2>{icon("shield")} Paying safely</h2>
     <ul>
       <li>We only chat from <b>{e(CFG["whatsappDisplay"])}</b>.</li>
-      <li>We only take payment into a <b>{e(CFG["legalName"])}</b> company account named on your invoice.</li>
+      <li>We only take payment into a <b>{e(CFG["legalName"])}</b> (RC {CFG["rc"]}) company account named on your invoice.</li>
       <li>Every request has a reference like <b>BDC-B-261018-K7Q2</b>. Quote it when you pay.</li>
       <li>If anyone asks you to pay into a personal account in our name, stop and call us.</li>
     </ul>
+  </div>
+</section>
+<section class="wrap block">
+  <div class="card">
+    <h2>Company details</h2>
+    <table class="co-table"><tbody>
+      <tr><td>Registered name</td><td>{e(CFG["legalName"])}</td></tr>
+      <tr><td>CAC RC number</td><td>{CFG["rc"]}</td></tr>
+      <tr><td>Office</td><td>{e(CFG["address"])}, FCT, Nigeria</td></tr>
+      <tr><td>WhatsApp</td><td><a href="https://wa.me/{CFG["whatsapp"]}" rel="noopener">{e(CFG["whatsappDisplay"])}</a></td></tr>
+      <tr><td>Email</td><td><a href="mailto:{CFG["email"]}">{e(CFG["email"])}</a></td></tr>
+    </tbody></table>
   </div>
 </section>
 <section class="wrap block">
@@ -783,7 +880,7 @@ def page_help(ver):
 def page_materials_index(cat, ver):
     def sec(name, key):
         return (f"<h2 class='sec-title'>{name}</h2><div class='gcards'>" + "".join(
-            f'<a class="gcard" href="/materials/{g["s"]}/"><b>{e(g["n"])}</b><span>{g["count"]} lines</span></a>'
+            f'<a class="gcard" href="/materials/{g["s"]}/"><span class="mi">{icon(GROUP_ICON.get(g["s"], "box"))}</span><b>{e(g["n"])}</b><span>{g["count"]} lines</span></a>'
             for g in cat["groups"] if g["sec"] == key) + "</div>")
     body = f"""
 <section class="wrap page-head">
@@ -889,34 +986,59 @@ def make_icons():
         return
     from PIL import Image, ImageDraw, ImageFont
     os.makedirs(out, exist_ok=True)
+    TEAL, MINT, SAGE, INK = "#165E57", "#C7E8A4", "#D5DFDB", "#16211E"
 
-    def font(size, bold=True):
-        for p in ["/usr/share/fonts/opentype/inter/InterDisplay-ExtraBold.otf", "/usr/share/fonts/opentype/inter/Inter-Bold.otf",
+    def font(size, weight="SemiBold"):
+        for p in [f"/usr/share/fonts/opentype/inter/InterDisplay-{weight}.otf", f"/usr/share/fonts/opentype/inter/Inter-{weight}.otf",
                   "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]:
             if os.path.exists(p):
                 return ImageFont.truetype(p, size)
         return ImageFont.load_default()
 
-    def mark(size, pad):
-        im = Image.new("RGB", (size, size), "#0B3D2A")
+    def circles(dr, cx, cy, r):
+        dr.ellipse([cx - r * 1.55, cy - r, cx + r * 0.45, cy + r], fill=MINT)
+        ov = Image.new("RGBA", (int(r * 4), int(r * 2)), (0, 0, 0, 0))
+        return ov
+
+    def mark(size, pad, bg=TEAL):
+        S = size * 4
+        im = Image.new("RGBA", (S, S), bg)
         dr = ImageDraw.Draw(im)
-        r = int(size * pad)
-        dr.rounded_rectangle([r, r, size - r, size - r], radius=int(size * 0.18), fill="#00A651")
-        f = font(int(size * 0.5))
-        dr.text((size / 2, size / 2 + size * 0.01), "B", font=f, fill="#FFFFFF", anchor="mm")
-        dr.rectangle([size * 0.33, size * 0.72, size * 0.67, size * 0.75], fill="#FFC72C")
-        return im
-    mark(512, 0.06).save(os.path.join(out, "icon-512.png"))
-    mark(192, 0.06).save(os.path.join(out, "icon-192.png"))
-    mark(180, 0.0).save(os.path.join(out, "apple-touch-icon.png"))
-    mark(512, 0.16).save(os.path.join(out, "maskable-512.png"))
-    og = Image.new("RGB", (1200, 630), "#0B3D2A")
+        r = S * (0.25 - pad * 0.5)
+        cy = S / 2
+        dr.ellipse([S / 2 - r * 1.62, cy - r, S / 2 + r * 0.38, cy + r], fill=MINT)
+        lay = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        ImageDraw.Draw(lay).ellipse([S / 2 - r * 0.38, cy - r, S / 2 + r * 1.62, cy + r], fill=(255, 255, 255, 200))
+        im = Image.alpha_composite(im, lay)
+        return im.resize((size, size), Image.LANCZOS).convert("RGB")
+    mark(512, 0.04).save(os.path.join(out, "icon-512.png"))
+    mark(192, 0.04).save(os.path.join(out, "icon-192.png"))
+    mark(180, 0.04).save(os.path.join(out, "apple-touch-icon.png"))
+    mark(512, 0.14).save(os.path.join(out, "maskable-512.png"))
+
+    W, H = 1200, 630
+    og = Image.new("RGB", (W, H), SAGE)
     dr = ImageDraw.Draw(og)
-    og.paste(mark(140, 0.0), (80, 80))
-    dr.text((250, 150), "Buildocrat", font=font(84), fill="#FFFFFF", anchor="lm")
-    dr.text((80, 330), "Buy · Stockpile · Sell · Source", font=font(64), fill="#7EE2A8", anchor="lm")
-    dr.text((80, 430), "Building materials for every Nigerian state.", font=font(44), fill="#FFFFFF", anchor="lm")
-    dr.text((80, 500), "Lock the price. Finish on WhatsApp.", font=font(44), fill="#FFC72C", anchor="lm")
+    dr.rounded_rectangle([50, 50, 720, 580], radius=40, fill="#FFFFFF")
+    og.paste(mark(84, 0.04), (90, 90))
+    dr.text((196, 132), "Buildocrat", font=font(54, "Bold"), fill=INK, anchor="lm")
+    dr.text((90, 250), "Buy, stockpile, sell and", font=font(52), fill=INK, anchor="lm")
+    dr.text((90, 316), "source building materials.", font=font(52), fill=INK, anchor="lm")
+    dr.text((90, 382), "Lock the price.", font=font(52), fill=TEAL, anchor="lm")
+    dr.rounded_rectangle([90, 450, 380, 530], radius=22, fill=MINT)
+    dr.text((235, 490), "[SHOP MATERIALS]", font=font(24, "Medium"), fill="#203A12", anchor="mm")
+    dr.rounded_rectangle([395, 450, 680, 530], radius=22, fill=TEAL)
+    dr.text((537, 490), "[LOCK A PRICE]", font=font(24, "Medium"), fill="#E6F3EF", anchor="mm")
+    dr.rounded_rectangle([750, 50, 1150, 330], radius=40, fill=MINT)
+    dr.text((790, 105), "**** RC 7019619", font=font(24, "Medium"), fill="#203A12", anchor="lm")
+    dr.text((790, 190), "Cement, 50kg", font=font(30, "Medium"), fill="#3D5A2C", anchor="lm")
+    dr.text((790, 260), "Weekly prices", font=font(56, "SemiBold"), fill="#203A12", anchor="lm")
+    dr.rounded_rectangle([750, 350, 1150, 580], radius=40, fill=TEAL)
+    for k, (h, n) in enumerate([(0.55, 0.35), (0.8, 0.6), (0.7, 0.4), (0.9, 0.75), (0.6, 0.3), (0.85, 0.5), (0.75, 0.55)]):
+        x = 800 + k * 48
+        dr.rounded_rectangle([x, 395, x + 14, 540], radius=7, fill="#22766C")
+        dr.rounded_rectangle([x, 540 - 145 * h, x + 14, 540], radius=7, fill=MINT)
+        dr.rounded_rectangle([x, 540 - 145 * n, x + 14, 540], radius=7, fill="#E6F3EF")
     og.save(os.path.join(DOCS, "og.png"))
 
 
@@ -991,7 +1113,8 @@ def write_extras(cat, d, ver):
     write("llms-full.txt", "\n".join(full) + "\n")
 
     write("offline.html", """<!doctype html><html lang="en-NG"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline | Buildocrat</title><meta name="robots" content="noindex"><meta name="theme-color" content="#0B3D2A">
+<title>Offline | Buildocrat</title><meta name="robots" content="noindex"><meta name="theme-color" content="#D5DFDB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1412" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
 <style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F4F6F2;color:#0F1A14;font:16px/1.55 Inter,system-ui,sans-serif;padding:16px;box-sizing:border-box}
 .c{background:#fff;border-radius:22px;max-width:440px;padding:30px 28px;box-shadow:0 10px 30px rgba(11,61,42,.12)}
@@ -1059,7 +1182,7 @@ def main(argv):
     top = [i for i in cat["items"] if i["c"] in cat["watch"]]
     write("llms.txt", f"""# Buildocrat — buildocrat.store
 
-> Buildocrat ({CFG['legalName']}, Abuja) sells, stockpiles, sources and lists building materials for every Nigerian state. Prices are Buildocrat selling prices built from the weekly Nigeria Construction Rate Book ({CFG['rateBookUrl']}), Abuja base adjusted by state. Every order, offer, listing and request is finished in a WhatsApp chat on {CFG['whatsappDisplay']}; payment is only to a Buildocrat company account.
+> Buildocrat ({CFG['legalName']}, CAC RC {CFG['rc']}, Abuja) sells, stockpiles, sources and lists building materials for every Nigerian state. Prices are Buildocrat selling prices built from the weekly Nigeria Construction Rate Book ({CFG['rateBookUrl']}), Abuja base adjusted by state. Every order, offer, listing and request is finished in a WhatsApp chat on {CFG['whatsappDisplay']}; payment is only to a Buildocrat company account.
 
 Prices updated: {today}. {len(cat['items'])} material lines.
 
@@ -1083,7 +1206,7 @@ Prices updated: {today}. {len(cat['items'])} material lines.
 
     manifest = {
         "name": "Buildocrat — building materials", "short_name": "Buildocrat", "start_url": "/?src=app",
-        "scope": "/", "display": "standalone", "background_color": "#F4F6F2", "theme_color": "#0B3D2A",
+        "scope": "/", "display": "standalone", "background_color": "#D5DFDB", "theme_color": "#165E57",
         "description": "Buy, stockpile, sell and source building materials in Nigeria.",
         "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
                   {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png"},

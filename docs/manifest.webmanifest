@@ -4,8 +4,8 @@
  "start_url": "/?src=app",
  "scope": "/",
  "display": "standalone",
- "background_color": "#F4F6F2",
- "theme_color": "#0B3D2A",
+ "background_color": "#D5DFDB",
+ "theme_color": "#165E57",
  "description": "Buy, stockpile, sell and source building materials in Nigeria.",
  "icons": [
   {

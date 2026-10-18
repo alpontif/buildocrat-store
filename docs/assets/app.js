@@ -347,12 +347,14 @@
     function renderBundles() {
       grid.innerHTML = CAT.bundles.map(b => {
         const c = bundleCalc(b); const full = c.plans[0];
-        return `<article class="bcard" data-bundle="${b.id}"><span class="ribbon">Save ${pct(b.discount)}</span>
-          <h2>${esc(b.name)}</h2><p class="small muted" style="margin:0">${esc(b.for)}</p>
-          <details><summary>What's in it (${b.lines.length} item${b.lines.length > 1 ? "s" : ""})</summary><ul>${b.lines.map(([cd, q]) => `<li>${qfmt(q)} ${esc(uw(BY[cd].u))} — ${esc(BY[cd].d)}</li>`).join("")}</ul></details>
-          <div><span class="was">${fmt(c.market)}</span><div class="bprice">${fmt(full.total)}</div><span class="small muted">pay in full · ${esc(stateName())} · held up to ${CAT.holdMonths} months</span></div>
+        const n = CAT.bundles.indexOf(b) + 1;
+        return `<article class="bcard" data-bundle="${b.id}">
+          <div class="bhead"><div class="bx-head"><span class="mask">**** OFFER ${String(n).padStart(2, "0")}</span><span class="ribbon">↗ Save ${pct(b.discount)}</span></div>
+          <h2>${esc(b.name)}</h2><span class="small" style="opacity:.75">${esc(b.for)}</span>
+          <div style="margin-top:8px"><span class="was">${fmt(c.market)}</span><div class="bprice">${fmt(full.total)}</div><span class="small" style="opacity:.75">pay in full · ${esc(stateName())} · held up to ${CAT.holdMonths} months</span></div></div>
+          <details><summary>[What's in it · ${b.lines.length} item${b.lines.length > 1 ? "s" : ""}]</summary><ul>${b.lines.map(([cd, q]) => `<li>${qfmt(q)} ${esc(uw(BY[cd].u))} — ${esc(BY[cd].d)}</li>`).join("")}</ul></details>
           <div class="plans" role="radiogroup" aria-label="Payment plan">${c.plans.map((p, k) => `<label><input type="radio" name="plan-${b.id}" value="${p.id}"${k ? "" : " checked"}><span><b>${esc(p.label)}: ${p.months > 1 ? fmt(p.up) + " now + " + (p.months - 1) + " × " + fmt(p.monthly) : fmt(p.total)}</b>${esc(p.note)}${p.months > 1 ? " · total " + fmt(p.total) : ""}</span></label>`).join("")}</div>
-          <button class="btn btn-primary" type="button" data-reserve>${WA_ICON} Reserve this offer</button></article>`;
+          <button class="btn btn-primary" type="button" data-reserve>${WA_ICON} [Reserve this offer]</button></article>`;
       }).join("");
     }
     grid.addEventListener("click", ev => {
@@ -421,7 +423,8 @@
       const save = s.mBase - s.locked, saveH = s.mHigh - s.locked;
       const small = s.locked < CAT.lock.minValue;
       out.innerHTML = `<h2>Your Price Lock</h2>
-        <div class="kpi hl"><span>Locked value for ${s.months} months · ${esc(stateName())}</span><b>${fmt(s.locked)}</b><span>today's prices ${fmt(s.now)} + ${pct(s.ten.spread)} lock spread, no fees</span></div>
+        <div class="kpi hl"><span class="mask" style="color:inherit">**** **** ${s.months}M LOCK</span><span>Locked value · ${esc(stateName())}</span><b>${fmt(s.locked)}</b><span>today's prices ${fmt(s.now)} + ${pct(s.ten.spread)} lock spread, no fees</span>
+          <div class="prog" style="color:#fff"><i style="width:${Math.round(s.seg.deposit * 100)}%"></i></div><span>${pct(s.seg.deposit)} deposit activates the lock</span></div>
         <div class="kgrid"><div class="kpi sun"><span>Activation deposit (${pct(s.seg.deposit)})</span><b>${fmt(s.deposit)}</b></div>
         <div class="kpi"><span>Average monthly draw-down</span><b>${fmt(s.monthly)}</b></div></div>
         <div class="kpi"><span>Buying the same each month at market, if prices rise ${pct(s.ib)} a year</span><b>${fmt(s.mBase)}</b>

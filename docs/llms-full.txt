@@ -922,7 +922,7 @@ Buildocrat selling prices in naira, Abuja, before delivery. Other states: multip
 ## FAQ
 
 Q: How do I pay?
-A: After you send your order, a Buildocrat person confirms stock, delivery cost and dates in the WhatsApp chat and sends an invoice. You pay by bank transfer into a Buildocrat Property Technologies Ltd company account named on the invoice. We never ask you to pay into a personal account.
+A: After you send your order, a Buildocrat person confirms stock, delivery cost and dates in the WhatsApp chat and sends an invoice. You pay by bank transfer into a Buildocrat Property Technologies Ltd company account (CAC RC 7019619) named on the invoice. We never ask you to pay into a personal account.
 
 Q: Are the prices on the site final?
 A: They are our current selling prices for your state, built from the weekly Nigeria Construction Rate Book plus our margin. Delivery is added per order, and we confirm the final price in writing before you pay. Prices can move during the week; the invoice price is the one you pay.
@@ -943,5 +943,5 @@ Q: Can you source items you don't list?
 A: Yes. Use the Source form or send your BoQ in WhatsApp. We find suppliers, compare them and quote delivered to your site.
 
 Q: Who is behind Buildocrat?
-A: Buildocrat Property Technologies Ltd, Abuja, which also publishes the free Nigeria Construction Rate Book and Nigeria Land Value Book.
+A: Buildocrat Property Technologies Ltd (CAC RC 7019619), Abuja, which also publishes the free Nigeria Construction Rate Book and Nigeria Land Value Book.
 
