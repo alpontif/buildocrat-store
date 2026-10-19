@@ -4,5 +4,26 @@
   "bing_site_verification": "",
   "ga4_measurement_id": "G-1CY05CQVR9",
   "cloudflare_web_analytics_token": "",
-  "indexnow_key": "04de6a9626389d0a16b71f8a9fd41e8a"
+  "indexnow_key": "04de6a9626389d0a16b71f8a9fd41e8a",
+  "organization": {
+    "name": "Buildocrat",
+    "legalName": "Buildocrat Property Technologies Ltd",
+    "url": "https://buildocrat.store/",
+    "logo": "https://buildocrat.store/icons/icon-512.png",
+    "email": "buildocrat@gmail.com",
+    "streetAddress": "No. 30 Anthony Enahoro Street",
+    "addressLocality": "Utako District, Abuja",
+    "addressRegion": "FCT",
+    "addressCountry": "NG",
+    "founder": "Engr. Akolade Maruf Ibrahim",
+    "sameAs": [
+      "https://rates.buildocrat.store",
+      "https://value.buildocrat.store"
+    ]
+  },
+  "website": {
+    "name": "Buildocrat",
+    "alternateName": "Buildocrat Store",
+    "url": "https://buildocrat.store/"
+  }
 }

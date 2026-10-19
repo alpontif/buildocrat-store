@@ -469,7 +469,7 @@ def page_home(cat, ver):
 <section class="wrap bento">
   <div class="bx hero-card s7">
     <p class="eyebrow">Nigeria's price-certain materials desk</p>
-    <h1>Buy, stockpile, sell and source building materials. <em>Lock the price.</em></h1>
+    <h1>Buy, stockpile, sell and source building materials with Buildocrat. <em>Lock the price.</em></h1>
     <p class="lede">Pick what you need, see a checked price for your state, and finish on WhatsApp with a real person. You pay only after we confirm stock, delivery and the final invoice.</p>
     <div class="tiles">
       <a class="tile tile-mint" href="/buy/"><span class="tl">Shop materials</span><span class="tile-ic">{icon("cart")}</span></a>
@@ -550,18 +550,42 @@ def page_home(cat, ver):
   </div>
 </section>
 """
-    ld = [
-        {"@context": "https://schema.org", "@type": "Organization", "name": "Buildocrat", "legalName": CFG["legalName"],
-         "identifier": {"@type": "PropertyValue", "propertyID": "CAC RC", "value": CFG["rc"]},
-         "url": SITE, "logo": SITE + "/icons/icon-512.png", "email": CFG["email"],
-         "telephone": "+" + CFG["whatsapp"],
-         "address": {"@type": "PostalAddress", "streetAddress": "No 30 Anthony Enahoro Street", "addressLocality": "Utako, Abuja",
-                     "addressRegion": "FCT", "addressCountry": "NG"},
-         "sameAs": [CFG["rateBookUrl"], CFG["landValueUrl"]]},
-        {"@context": "https://schema.org", "@type": "WebSite", "name": "Buildocrat", "url": SITE,
-         "potentialAction": {"@type": "SearchAction", "target": SITE + "/buy/?q={search_term_string}",
-                             "query-input": "required name=search_term_string"}},
-    ]
+    org_cfg = SCFG.get("organization") or {}
+    web_cfg = SCFG.get("website") or {}
+    site_url = (org_cfg.get("url") or SITE).rstrip("/") + "/"
+    same_as = org_cfg.get("sameAs")
+    if same_as is None:
+        same_as = [CFG["rateBookUrl"], CFG["landValueUrl"]]
+    same_as = [u for u in same_as if u]
+    org = {
+        "@context": "https://schema.org", "@type": "Organization",
+        "name": org_cfg.get("name") or "Buildocrat",
+        "legalName": org_cfg.get("legalName") or CFG["legalName"],
+        "url": site_url,
+        "logo": org_cfg.get("logo") or (SITE.rstrip("/") + "/icons/icon-512.png"),
+        "email": org_cfg.get("email") or CFG["email"],
+        "telephone": "+" + CFG["whatsapp"],
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": org_cfg.get("streetAddress") or "No. 30 Anthony Enahoro Street",
+            "addressLocality": org_cfg.get("addressLocality") or "Utako District, Abuja",
+            "addressRegion": org_cfg.get("addressRegion") or "FCT",
+            "addressCountry": org_cfg.get("addressCountry") or "NG",
+        },
+        "founder": {"@type": "Person", "name": org_cfg.get("founder") or "Engr. Akolade Maruf Ibrahim"},
+        "identifier": {"@type": "PropertyValue", "propertyID": "CAC RC", "value": CFG["rc"]},
+    }
+    if same_as:
+        org["sameAs"] = same_as
+    website = {
+        "@context": "https://schema.org", "@type": "WebSite",
+        "name": web_cfg.get("name") or "Buildocrat",
+        "alternateName": web_cfg.get("alternateName") or "Buildocrat Store",
+        "url": (web_cfg.get("url") or site_url).rstrip("/") + "/",
+        "potentialAction": {"@type": "SearchAction", "target": SITE + "/buy/?q={search_term_string}",
+                            "query-input": "required name=search_term_string"},
+    }
+    ld = [org, website]
     return layout("/", "Buildocrat — buy, stockpile, sell & source building materials in Nigeria",
                   "Buy cement, iron rods, blocks, sand and roofing at checked prices for your state, lock prices for your build, sell or source materials, all finished on WhatsApp.",
                   body, "home", ver, ld)
