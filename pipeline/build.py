@@ -296,6 +296,24 @@ JOURNEYS = [
 
 
 # ---------------------------------------------------------------- layout ---
+def head_analytics():
+    """GA4 gtag.js (and optional Cloudflare beacon) for every page head. One copy only."""
+    analytics = ""
+    if SCFG.get("ga4_measurement_id"):
+        gid = e(SCFG["ga4_measurement_id"])
+        analytics += (f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>'
+                      f"<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','{gid}');"
+                      f"document.addEventListener('click',function(ev){{var el=ev.target,a=el&&el.closest?el.closest('a'):null;"
+                      f"if(!a&&el&&el.parentElement&&el.parentElement.closest)a=el.parentElement.closest('a');"
+                      f"if(!a||!a.href)return;var u=a.href;"
+                      f"if(/wa\\.me|api\\.whatsapp\\.com/.test(u))gtag('event','whatsapp_click',{{link_url:u}});"
+                      f"else if(u.indexOf('mailto:')===0)gtag('event','email_click',{{link_url:u}});}});</script>")
+    if SCFG.get("cloudflare_web_analytics_token"):
+        analytics += (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+                      f'data-cf-beacon=\'{{"token": "{e(SCFG["cloudflare_web_analytics_token"])}"}}\'></script>')
+    return analytics
+
+
 def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex=False):
     canon = SITE + path
     nav = "".join(
@@ -318,14 +336,7 @@ def layout(path, title, desc, body, page, ver, jsonld=None, crumbs=None, noindex
         verify += f'<meta name="google-site-verification" content="{e(SCFG["google_site_verification"])}">\n'
     if SCFG.get("bing_site_verification"):
         verify += f'<meta name="msvalidate.01" content="{e(SCFG["bing_site_verification"])}">\n'
-    analytics = ""
-    if SCFG.get("ga4_measurement_id"):
-        gid = e(SCFG["ga4_measurement_id"])
-        analytics += (f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>'
-                      f"<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','{gid}');</script>")
-    if SCFG.get("cloudflare_web_analytics_token"):
-        analytics += (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
-                      f'data-cf-beacon=\'{{"token": "{e(SCFG["cloudflare_web_analytics_token"])}"}}\'></script>')
+    analytics = head_analytics()
     boot = json.dumps({"wa": CFG["whatsapp"], "waDisplay": CFG["whatsappDisplay"], "email": CFG["email"], "v": ver,
                        "page": page})
     return f"""<!doctype html>
@@ -1121,7 +1132,7 @@ def write_extras(cat, d, ver):
 .c{background:#fff;border-radius:22px;max-width:440px;padding:30px 28px;box-shadow:0 10px 30px rgba(11,61,42,.12)}
 img{width:56px;height:56px;border-radius:14px}h1{color:#0B3D2A;font-size:1.5rem;margin:14px 0 6px;line-height:1.2}
 a{display:inline-block;margin:14px 8px 0 0;background:#00A651;color:#fff;text-decoration:none;font-weight:700;padding:10px 20px;border-radius:999px}
-@media (prefers-color-scheme:dark){body{background:#0C130F;color:#ECF3EE}.c{background:#141F19}h1{color:#7EE2A8}}</style></head>
+@media (prefers-color-scheme:dark){body{background:#0C130F;color:#ECF3EE}.c{background:#141F19}h1{color:#7EE2A8}}</style>""" + head_analytics() + """</head>
 <body><div class="c"><img src="/icons/icon-192.png" alt=""><h1>You're offline</h1>
 <p>This page isn't saved on this device yet. The shop, stockpile offers and this week's prices still open offline from your last visit. Your cart is kept; send the order when you're back online.</p>
 <a href="/buy/">Open the shop</a><a href="/stockpile/">Stockpile offers</a></div></body></html>

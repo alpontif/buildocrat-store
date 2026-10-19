@@ -2,7 +2,7 @@
   "_readme": "Paste verification codes / analytics IDs here, then rebuild (python3 pipeline/build.py) or run the Refresh workflow. Leave blank to switch off.",
   "google_site_verification": "",
   "bing_site_verification": "",
-  "ga4_measurement_id": "",
+  "ga4_measurement_id": "G-1CY05CQVR9",
   "cloudflare_web_analytics_token": "",
   "indexnow_key": "04de6a9626389d0a16b71f8a9fd41e8a"
 }
