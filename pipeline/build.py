@@ -296,8 +296,18 @@ JOURNEYS = [
 
 
 # ---------------------------------------------------------------- layout ---
+# X base pixel (site rhmpt). config loads the tag; track fires PageView on every page.
+X_PIXEL = """<script>
+!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+},s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+twq('config','rhmpt');
+twq('track','PageView');
+</script>"""
+
+
 def head_analytics():
-    """GA4 gtag.js (and optional Cloudflare beacon) for every page head. One copy only."""
+    """GA4 gtag.js, X pixel, and optional Cloudflare beacon for every page head. One copy only."""
     analytics = ""
     if SCFG.get("ga4_measurement_id"):
         gid = e(SCFG["ga4_measurement_id"])
@@ -311,6 +321,7 @@ def head_analytics():
     if SCFG.get("cloudflare_web_analytics_token"):
         analytics += (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
                       f'data-cf-beacon=\'{{"token": "{e(SCFG["cloudflare_web_analytics_token"])}"}}\'></script>')
+    analytics += X_PIXEL
     return analytics
 
 
